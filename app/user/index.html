@@ -6,6 +6,8 @@
   <title>My Schemes — Opportunity OS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- EXTERNAL CONFIG -->
+  <script src="../env.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1048,10 +1050,10 @@ User profile: Age ${profile.age||'?'}, Gender: ${profile.gender||'?'}, Occupatio
 Also tell in 1 line if this user likely qualifies.`;
 
   try {
-    const resp = await fetch('http://localhost:11434/api/generate', {
+    const resp = await fetch(window.CIVIC_CONFIG.OLLAMA_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'qwen3:8b', prompt, stream: true }),
+      body: JSON.stringify({ model: window.CIVIC_CONFIG.OLLAMA_MODEL, prompt, stream: true }),
       signal: AbortSignal.timeout(30000),
     });
 
@@ -1090,9 +1092,9 @@ Also tell in 1 line if this user likely qualifies.`;
   } catch (err) {
     loadEl.style.display = 'none';
     if (err.name === 'TimeoutError') {
-      textEl.textContent = '⏱ Ollama took too long. Make sure it is running with: ollama run qwen3:8b';
+      textEl.textContent = `⏱ Ollama took too long. Make sure it is running with: ollama run ${window.CIVIC_CONFIG.OLLAMA_MODEL}`;
     } else {
-      textEl.textContent = '⚠ Ollama not reachable. Start it with: ollama run qwen3:8b — then try again.';
+      textEl.textContent = `⚠ Ollama not reachable. Start it with: ollama run ${window.CIVIC_CONFIG.OLLAMA_MODEL} — then try again.`;
     }
   }
 }
@@ -1182,7 +1184,7 @@ function applyNow(name) {
   alert(`Opening official portal for: ${name}`);
 }
 
-const GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE";
+const GROQ_API_KEY = window.CIVIC_CONFIG.GROQ_API_KEY;
 
 // ─── GROQ VOICE SEARCH (STT) ───
 let mediaRecorder;

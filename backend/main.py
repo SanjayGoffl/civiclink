@@ -5,6 +5,9 @@ Single backend serving both webapp and mobile app
 import csv, json, re, os
 from pathlib import Path
 from typing import Optional, List
+from dotenv import load_dotenv
+
+load_dotenv() # Load from .env file
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -21,8 +24,13 @@ app.add_middleware(
 )
 
 # ─── Dataset path ───
+DATA_FILE_NAME = os.getenv("DATA_FILE", "updated_data.csv")
 BASE = Path(__file__).parent.parent / "dataset"
-DATA_FILE = BASE / "updated_data.csv"
+DATA_FILE = BASE / DATA_FILE_NAME
+
+# ─── Configuration ───
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api/generate")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen3:8b")
 
 # ─── Aadhaar simulation DB ───
 AADHAAR_DB = {
@@ -388,8 +396,8 @@ async def ai_explain(req: AIRequest):
     try:
         async with httpx.AsyncClient(timeout=30) as client:
             resp = await client.post(
-                "http://localhost:11434/api/generate",
-                json={"model": "qwen3:8b", "prompt": prompt, "stream": False},
+                OLLAMA_URL,
+                json={"model": OLLAMA_MODEL, "prompt": prompt, "stream": False},
             )
             resp.raise_for_status()
             data = resp.json()

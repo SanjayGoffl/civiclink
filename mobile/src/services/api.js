@@ -1,8 +1,7 @@
 // Opportunity OS — API Service (Mobile)
 // Points to the shared FastAPI backend
 
-const API_BASE = 'http://10.0.2.2:8000'; // Android emulator → localhost
-// For physical device: replace with your machine's local IP e.g. 'http://192.168.1.5:8000'
+const API_BASE = process.env.EXPO_PUBLIC_API_URL || 'http://10.0.2.2:8000';
 
 export const api = {
   async verifyAadhaar(aadhaar) {
