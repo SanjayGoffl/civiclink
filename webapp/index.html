@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Opportunity OS — Find What You Deserve</title>
+  <meta name="description" content="Discover government schemes, subsidies, and job opportunities personalized for your profile using Aadhaar-based matching."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <style>
+    /* Landing-specific */
+    .hero {
+      max-width: 860px; margin: 80px auto 0;
+      padding: 0 24px; text-align: center;
+    }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--accent-soft); color: var(--accent);
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 12px; font-weight: 600; margin-bottom: 24px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .hero h1 { font-size: clamp(30px,5vw,52px); line-height: 1.15; margin-bottom: 18px; }
+    .hero h1 span { color: var(--accent); }
+    .hero p { font-size: 17px; color: var(--mid); max-width: 520px; margin: 0 auto 36px; line-height: 1.7; }
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .stats {
+      display: flex; justify-content: center; gap: 48px;
+      margin: 64px auto; max-width: 640px; flex-wrap: wrap; padding: 0 24px;
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 32px; font-weight: 700; }
+    .stat-label { font-size: 12px; color: var(--mid); margin-top: 3px; }
+
+    .features {
+      max-width: 1060px; margin: 0 auto; padding: 64px 24px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;
+    }
+    .feat-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 14px;
+      padding: 24px; transition: box-shadow 0.2s;
+    }
+    .feat-card:hover { box-shadow: var(--shadow-md); }
+    .feat-icon { font-size: 24px; margin-bottom: 12px; }
+    .feat-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .feat-desc { font-size: 13px; color: var(--mid); line-height: 1.6; }
+
+    .how { background: var(--white); border-top: 1px solid var(--border); padding: 60px 24px; }
+    .how-inner { max-width: 900px; margin: 0 auto; }
+    .steps { display: flex; gap: 24px; margin-top: 36px; flex-wrap: wrap; }
+    .step { flex: 1; min-width: 200px; display: flex; gap: 14px; }
+    .step-num {
+      width: 34px; height: 34px; min-width: 34px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+    }
+    .step h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .step p { font-size: 13px; color: var(--mid); line-height: 1.6; }
+
+    .cta-strip {
+      background: var(--dark); color: #fff;
+      text-align: center; padding: 60px 24px;
+    }
+    .cta-strip h2 { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
+    .cta-strip p { font-size: 15px; color: #94A3B8; margin-bottom: 28px; }
+
+    footer {
+      background: var(--white); border-top: 1px solid var(--border);
+      padding: 24px; display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--mid);
+    }
+
+    nav { border-bottom: 1px solid var(--border); }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { text-decoration: none; color: var(--mid); font-size: 14px; font-weight: 500; }
+    .nav-links a:hover { color: var(--dark); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topbar">
+  <div class="brand"><div class="brand-dot"></div>Opportunity OS</div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="dashboard.html">Browse Schemes</a>
+    <a href="register.html" class="btn btn-primary btn-sm">Get Started →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-chip">🇮🇳 Government Schemes · Jobs · Training</div>
+  <h1>Find Every Opportunity<br/><span>You Deserve</span></h1>
+  <p>Enter your Aadhaar number and instantly discover all government schemes, jobs, and programs matched to your exact profile — personalized, simple, free.</p>
+  <div class="hero-cta">
+    <a href="register.html" class="btn btn-primary">Check My Eligibility →</a>
+    <a href="dashboard.html" class="btn btn-secondary">Browse Schemes</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-num" id="schemeCount">3,400+</div><div class="stat-label">Government Schemes</div></div>
+  <div class="stat"><div class="stat-num">29</div><div class="stat-label">States Covered</div></div>
+  <div class="stat"><div class="stat-num">12</div><div class="stat-label">Categories</div></div>
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Free to Use</div></div>
+</div>
+
+<!-- FEATURES -->
+<div class="features">
+  <div class="feat-card"><div class="feat-icon">🎯</div><div class="feat-title">Personalized Matching</div><div class="feat-desc">Schemes matched to your age, income, caste, gender, location, and occupation — not just a generic list.</div></div>
+  <div class="feat-card"><div class="feat-icon">🪪</div><div class="feat-title">Aadhaar-Based</div><div class="feat-desc">Enter your Aadhaar and we auto-fill your profile. Or fill manually. Either way, we find what fits you.</div></div>
+  <div class="feat-card"><div class="feat-icon">✦</div><div class="feat-title">AI Explanations</div><div class="feat-desc">Each scheme explained in plain language by local AI (Ollama · qwen3:8b) — no government jargon.</div></div>
+  <div class="feat-card"><div class="feat-icon">📋</div><div class="feat-title">Printable Receipt</div><div class="feat-desc">Print a receipt of your eligible schemes to take to the nearest CSC or e-Sevai centre.</div></div>
+  <div class="feat-card"><div class="feat-icon">🔍</div><div class="feat-title">Smart Filters</div><div class="feat-desc">Filter 3,400+ schemes by category, state, level, gender, and more. Find exactly what you need.</div></div>
+  <div class="feat-card"><div class="feat-icon">📱</div><div class="feat-title">Mobile App</div><div class="feat-desc">Same experience on Android and iOS via the Opportunity OS mobile app — works offline too.</div></div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="how" id="how">
+  <div class="how-inner">
+    <h2>How it works</h2>
+    <p class="text-mid" style="margin-top:6px;">Three steps to your personalized opportunity list</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Enter Aadhaar Number</h4>
+          <p>We auto-fetch your name, age, gender, address, and pincode from our secure simulated database.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Complete Your Profile</h4>
+          <p>Add occupation, income, caste, education, and more for accurate scheme matching.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h4>See Your Matches</h4>
+          <p>Browse all eligible schemes, get AI explanations in plain language, and print a receipt.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-strip">
+  <h2>Don't miss what you deserve</h2>
+  <p>Thousands of schemes go unclaimed because people don't know about them.</p>
+  <a href="register.html" class="btn btn-primary">Check My Eligibility — It's Free</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="brand"><div class="brand-dot"></div>Opportunity OS</div>
+  <div>© 2025 Opportunity OS · Hackathon Demo · Data from MyScheme.gov.in</div>
+</footer>
+
+<script src="js/api.js"></script>
+<script>
+  // Load real scheme count from backend if available
+  api.health().then(r => {
+    if (r.schemes_loaded) {
+      document.getElementById('schemeCount').textContent = r.schemes_loaded.toLocaleString() + '+';
+    }
+  }).catch(() => {});
+
+  // If already registered, redirect
+  if (Profile.load()) {
+    // Show a "resume session" chip
+    const chip = document.createElement('a');
+    chip.href = 'dashboard.html';
+    chip.className = 'btn btn-secondary btn-sm';
+    chip.textContent = '→ My Dashboard';
+    document.querySelector('.nav-links').prepend(chip);
+  }
+</script>
+</body>
+</html>

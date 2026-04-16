@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Schemes — Opportunity OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <style>
+    .layout { display: flex; min-height: calc(100vh - 56px); }
+    .main { flex: 1; padding: 24px; overflow-y: auto; }
+
+    .main-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .main-title { font-size: 20px; font-weight: 700; }
+    .main-sub { font-size: 13px; color: var(--mid); margin-top: 3px; }
+
+    .search-bar {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 8px 14px; min-width: 240px;
+    }
+    .search-bar:focus-within { border-color: var(--accent); }
+    .search-bar input { border: none; outline: none; font-size: 13px; font-family: inherit; color: var(--dark); width: 100%; background: transparent; }
+
+    .type-tabs { display: flex; gap: 6px; margin-bottom: 18px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+    .type-tabs::-webkit-scrollbar { display: none; }
+    .type-tab {
+      white-space: nowrap; padding: 6px 14px; border-radius: 100px;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-size: 12px; font-weight: 600; color: var(--mid); cursor: pointer; transition: all 0.12s;
+    }
+    .type-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .type-tab.on { background: var(--dark); color: #fff; border-color: var(--dark); }
+
+    .results-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .results-info { font-size: 12px; color: var(--mid); }
+    .sort-sel { padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; font-family: inherit; color: var(--dark); background: var(--white); outline: none; }
+
+    .scheme-list { display: flex; flex-direction: column; gap: 8px; }
+
+    /* Skeleton loading */
+    .skel-card { height: 72px; border-radius: 14px; margin-bottom: 8px; }
+
+    /* toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px);
+      background: var(--dark); color: #fff; padding: 10px 20px; border-radius: 10px;
+      font-size: 13px; font-weight: 500; transition: transform 0.3s; z-index: 999;
+      opacity: 0; pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast-error { background: var(--red); }
+
+    /* Nav user */
+    .nav-user-chip {
+      display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 6px;
+      border-radius: 100px; border: 1px solid var(--border); background: var(--white);
+      cursor: pointer; transition: background 0.12s; font-family: inherit;
+    }
+    .nav-user-chip:hover { background: var(--bg); }
+    .nav-avatar {
+      width: 28px; height: 28px; border-radius: 50%; background: var(--accent);
+      color: #fff; font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Load more */
+    .load-more {
+      text-align: center; padding: 20px;
+    }
+
+    /* Filter selects in sidebar */
+    .filter-sel {
+      width: 100%; padding: 8px 10px; border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: 12px; font-family: inherit; color: var(--dark);
+      background: var(--white); outline: none; margin-bottom: 8px;
+    }
+    .filter-sel:focus { border-color: var(--accent); }
+
+    /* Logout */
+    .logout-btn {
+      width: 100%; padding: 8px 10px; border-radius: 8px;
+      background: none; border: 1px solid var(--border); font-size: 12px;
+      color: var(--mid); cursor: pointer; font-family: inherit; text-align: left;
+    }
+    .logout-btn:hover { background: var(--red-soft); color: var(--red); border-color: var(--red); }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <a href="index.html" style="font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;">← Home</a>
+    <div class="brand"><div class="brand-dot"></div>Opportunity OS</div>
+  </div>
+  <div class="topbar-right">
+    <button class="btn btn-secondary btn-sm" onclick="openReceipt()">🖨️ Receipt</button>
+    <button class="nav-user-chip" onclick="openEdit()">
+      <div class="nav-avatar" id="navAvatar">?</div>
+      <span style="font-size:13px;font-weight:600;" id="navName">—</span>
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-heading">Profile</div>
+      <div class="profile-chip">
+        <div class="profile-chip-name" id="sbName">—</div>
+        <div class="profile-chip-meta" id="sbMeta">—</div>
+        <div class="profile-chip-badge">✓ <span id="eligibleCount">0</span> eligible</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">Category</div>
+      <div id="catList">
+        <div class="nav-item active" onclick="setCat('',this)">📋 All Categories<span class="nav-item-count" id="cntAll">—</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">Filter</div>
+      <select class="filter-sel" id="gFilter" onchange="applyFilters()">
+        <option value="">Gender: All</option>
+        <option value="female">Female</option>
+        <option value="male">Male</option>
+      </select>
+      <select class="filter-sel" id="lFilter" onchange="applyFilters()">
+        <option value="">Level: All</option>
+        <option value="Central">Central</option>
+        <option value="State">State</option>
+      </select>
+      <select class="filter-sel" id="eFilter" onchange="applyFilters()">
+        <option value="">Eligibility: All</option>
+        <option value="yes">Eligible ✓</option>
+        <option value="maybe">Possibly</option>
+      </select>
+      <button onclick="clearFilters()" class="logout-btn" style="margin-bottom:8px;">✕ Clear filters</button>
+      <button onclick="logout()" class="logout-btn">Sign out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="main-head">
+      <div>
+        <div class="main-title" id="mainTitle">Your Schemes</div>
+        <div class="main-sub" id="mainSub">Loading your personalized matches…</div>
+      </div>
+      <div class="search-bar">
+        <span style="color:var(--light);font-size:14px;">🔍</span>
+        <input type="text" id="searchQ" placeholder="Search schemes…" oninput="debounce(applyFilters, 300)()"/>
+      </div>
+    </div>
+
+    <div class="type-tabs" id="typeTabs">
+      <div class="type-tab on" onclick="setType('',this)">All</div>
+      <div class="type-tab" onclick="setType('Schemes',this)">🎯 Schemes</div>
+      <div class="type-tab" onclick="setType('Subsidies',this)">💰 Subsidies</div>
+      <div class="type-tab" onclick="setType('Job opportunities',this)">💼 Jobs</div>
+      <div class="type-tab" onclick="setType('Trainee programs',this)">📖 Training</div>
+      <div class="type-tab" onclick="setType('Local opportunities',this)">📍 Local</div>
+    </div>
+
+    <div class="results-row">
+      <div class="results-info" id="resultsInfo">—</div>
+      <select class="sort-sel" id="sortQ" onchange="applyFilters()">
+        <option value="eligible">Eligible first</option>
+        <option value="az">A → Z</option>
+      </select>
+    </div>
+
+    <div id="schemeList" class="scheme-list"></div>
+    <div class="load-more" id="loadMore" style="display:none;">
+      <button class="btn btn-secondary" onclick="loadNextPage()">Load more schemes</button>
+    </div>
+  </main>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="overlay" id="editOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeEdit()">✕</button>
+    <h3 style="margin-bottom:4px;">Edit Profile</h3>
+    <p class="text-mid text-sm" style="margin-bottom:18px;">Updates matching instantly</p>
+    <div class="grid-2">
+      <div class="field"><label>Full Name</label><input id="eName" type="text"/></div>
+      <div class="field"><label>Age</label><input id="eAge" type="number" min="1" max="120"/></div>
+      <div class="field"><label>Gender</label>
+        <select id="eGender"><option>Male</option><option>Female</option><option>Other</option></select>
+      </div>
+      <div class="field"><label>State</label><input id="eState" type="text"/></div>
+      <div class="field"><label>Occupation</label><input id="eOcc" type="text"/></div>
+      <div class="field"><label>Income (₹/year)</label><input id="eIncome" type="number"/></div>
+      <div class="field"><label>Caste</label>
+        <select id="eCaste">
+          <option value="">—</option><option value="General">General</option>
+          <option value="OBC">OBC</option><option value="SC">SC</option>
+          <option value="ST">ST</option><option value="MBC">MBC</option>
+        </select>
+      </div>
+      <div class="field"><label>Disability</label>
+        <select id="eDisab"><option value="no">No</option><option value="yes">Yes</option></select>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full mt-16" onclick="saveEdit()">Save & Re-match →</button>
+  </div>
+</div>
+
+<!-- RECEIPT MODAL -->
+<div class="overlay" id="receiptOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeReceipt()">✕</button>
+    <h3>🖨️ Eligibility Receipt</h3>
+    <p class="text-mid text-sm mt-8">Take this to your nearest CSC / e-Sevai centre</p>
+    <div class="receipt" id="receiptBody"></div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="btn btn-primary" style="flex:1;" onclick="window.print()">Print</button>
+      <button class="btn btn-secondary" style="flex:1;" onclick="closeReceipt()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="js/api.js"></script>
+<script>
+  const profile = Profile.load();
+  if (!profile) window.location.href = 'register.html';
+
+  let allResults = [];
+  let activeCat = '';
+  let activeType = '';
+  let currentOffset = 0;
+  const PAGE_SIZE = 30;
+
+  // ─── Init ───
+  function init() {
+    // Update nav
+    const initials = (profile.name||'U').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('navAvatar').textContent = initials;
+    document.getElementById('navName').textContent = profile.name.split(' ')[0];
+    document.getElementById('sbName').textContent = profile.name;
+    document.getElementById('sbMeta').textContent =
+      [profile.age ? profile.age+' yrs' : null, profile.gender, profile.state].filter(Boolean).join(' · ');
+
+    // Fill edit modal defaults
+    document.getElementById('eName').value = profile.name || '';
+    document.getElementById('eAge').value = profile.age || '';
+    document.getElementById('eGender').value = profile.gender || 'Male';
+    document.getElementById('eState').value = profile.state || '';
+    document.getElementById('eOcc').value = profile.occupation || '';
+    document.getElementById('eIncome').value = profile.income || '';
+    document.getElementById('eCaste').value = profile.caste || '';
+    document.getElementById('eDisab').value = profile.disability || 'no';
+
+    loadCategories();
+    loadSchemes();
+  }
+
+  // ─── Load categories ───
+  async function loadCategories() {
+    try {
+      const cats = await api.getCategories();
+      const el = document.getElementById('catList');
+      el.innerHTML = `<div class="nav-item active" onclick="setCat('',this)">📋 All<span class="nav-item-count" id="cntAll">—</span></div>`;
+      // Show top 10 unique top-level categories
+      const topCats = [...new Set(cats.map(c => c.split(',')[0].trim()))].slice(0, 10);
+      const icons = {'Agriculture':'🌾','Social welfare':'🛡️','Education':'📚','Business':'💼','Health':'🏥','Women':'👩','Skills':'🔧','Housing':'🏠','Banking':'🏦','Sports':'⚽'};
+      topCats.forEach(c => {
+        const icon = Object.entries(icons).find(([k]) => c.toLowerCase().includes(k.toLowerCase()));
+        el.insertAdjacentHTML('beforeend', `
+          <div class="nav-item" onclick="setCat('${c}',this)">
+            ${icon?icon[1]:'📋'} ${c.length > 20 ? c.slice(0,20)+'…' : c}
+            <span class="nav-item-count">—</span>
+          </div>
+        `);
+      });
+    } catch (e) { /* ignore */ }
+  }
+
+  // ─── Load schemes (match endpoint) ───
+  async function loadSchemes(append = false) {
+    if (!append) {
+      currentOffset = 0;
+      showSkeleton();
+    }
+    try {
+      const res = await api.match(profile, {
+        limit: PAGE_SIZE,
+        offset: currentOffset,
+        category: activeCat,
+        search: document.getElementById('searchQ').value,
+      });
+
+      if (!append) allResults = res.results;
+      else allResults = [...allResults, ...res.results];
+
+      const eligN = res.eligible_count || allResults.filter(s => s.eligibility_status === 'yes').length;
+      document.getElementById('eligibleCount').textContent = eligN;
+      document.getElementById('mainTitle').textContent = `Welcome, ${profile.name.split(' ')[0]}`;
+      document.getElementById('mainSub').textContent = `${eligN} direct matches · ${res.total} total schemes`;
+      document.getElementById('cntAll').textContent = res.total;
+      document.getElementById('resultsInfo').textContent = `Showing ${allResults.length} of ${res.total}`;
+
+      // Load more
+      const hasMore = allResults.length < res.total;
+      document.getElementById('loadMore').style.display = hasMore ? 'block' : 'none';
+
+      applyFilters();
+    } catch (e) {
+      document.getElementById('schemeList').innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">⚠️</div>
+          <h3>Backend not running</h3>
+          <p>Start the backend: <code>cd backend && uvicorn main:app --reload</code></p>
+        </div>`;
+      document.getElementById('mainSub').textContent = 'Could not connect to backend';
+    }
+  }
+
+  function loadNextPage() {
+    currentOffset += PAGE_SIZE;
+    loadSchemes(true);
+  }
+
+  // ─── Filters (client-side on loaded data) ───
+  function applyFilters() {
+    const q = document.getElementById('searchQ').value.toLowerCase();
+    const gF = document.getElementById('gFilter').value;
+    const lF = document.getElementById('lFilter').value;
+    const eF = document.getElementById('eFilter').value;
+    const sort = document.getElementById('sortQ').value;
+
+    let list = allResults.filter(s => {
+      if (activeType && s.type !== activeType) return false;
+      if (q && !s.name.toLowerCase().includes(q) && !s.category.toLowerCase().includes(q)
+          && !s.eligibility.toLowerCase().includes(q)) return false;
+      if (gF && s.gender !== 'any' && s.gender !== gF) return false;
+      if (lF && s.level !== lF) return false;
+      if (eF && s.eligibility_status !== eF) return false;
+      return true;
+    });
+
+    if (sort === 'az') list.sort((a,b) => a.name.localeCompare(b.name));
+
+    document.getElementById('resultsInfo').textContent = `Showing ${list.length}`;
+    document.getElementById('schemeList').innerHTML = list.length
+      ? list.map(renderCard).join('')
+      : `<div class="empty"><div class="empty-icon">🔍</div><h3>No results</h3><p>Try a different search or filter.</p></div>`;
+  }
+
+  // ─── Render card ───
+  function renderCard(s) {
+    const e = s.eligibility_status || 'maybe';
+    const badgeClass = {yes:'badge-green',maybe:'badge-amber',no:'badge-gray'}[e];
+    const label = {yes:'✓ Eligible',maybe:'Possibly Eligible',no:'May not qualify'}[e];
+    const lvl = s.level === 'Central'
+      ? `<span class="badge badge-dark">Central</span>`
+      : `<span class="badge badge-dark">${s.state||s.level}</span>`;
+    return `
+    <div class="scheme-card ${e==='yes'?'eligible':''}" id="sc-${s.id}">
+      <div class="scheme-card-header" onclick="toggle(${s.id})">
+        <div class="scheme-card-dot dot-${e}"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px;">
+            <span class="badge ${badgeClass}">${label}</span>${lvl}
+          </div>
+          <div style="font-size:14px;font-weight:600;color:var(--dark);line-height:1.4;">${s.name}</div>
+          <div style="font-size:12px;color:var(--green);font-weight:500;margin-top:2px;">💰 ${s.benefit||'See details'}</div>
+        </div>
+        <button class="toggle-btn" id="tb-${s.id}">▼</button>
+      </div>
+      <div class="scheme-card-body" id="sb-${s.id}">
+        <div class="detail-grid">
+          <div class="detail-cell"><label>Category</label><p>${s.category.split(',')[0]}</p></div>
+          <div class="detail-cell"><label>Level</label><p>${s.level}</p></div>
+          <div class="detail-cell"><label>Age Range</label><p>${s.min_age||0}–${s.max_age>=100?'No limit':s.max_age} yrs</p></div>
+          <div class="detail-cell"><label>Gender</label><p>${s.gender==='any'?'Any':s.gender}</p></div>
+        </div>
+        <div class="detail-full"><label>Eligibility</label><p>${s.eligibility||'—'}</p></div>
+        <div class="detail-full"><label>About</label><p>${s.description||s.eligibility||'—'}</p></div>
+        <div class="ai-block" id="ai-${s.id}">
+          <div class="ai-label">✦ AI Explanation · qwen3:8b</div>
+          <div class="ai-text" id="ai-txt-${s.id}" style="color:var(--light);font-style:italic;">Click "Explain Simply" to get a plain-language summary.</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();alert('Opening portal for: ${s.name.replace(/'/,"\\'")}')">🔗 Apply</button>
+          <button class="btn btn-secondary btn-sm btn-ai-trigger" onclick="event.stopPropagation();askAI(${s.id})" style="border-color:#BAE6FD;color:var(--accent);">✦ Explain Simply</button>
+          <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();printOne(${s.id})">🖨️ Print</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function toggle(id) {
+    const body = document.getElementById('sb-'+id);
+    const btn = document.getElementById('tb-'+id);
+    const isOpen = body.classList.toggle('open');
+    btn.classList.toggle('open', isOpen);
+  }
+
+  // ─── AI ───
+  async function askAI(id) {
+    const txtEl = document.getElementById('ai-txt-'+id);
+    txtEl.innerHTML = `<span style="display:flex;align-items:center;gap:8px;color:var(--mid)"><span class="dot-loader"><span></span><span></span><span></span></span> Asking Qwen3…</span>`;
+    try {
+      const res = await api.explain(id, profile);
+      txtEl.style.color = 'var(--dark)';
+      txtEl.style.fontStyle = 'normal';
+      txtEl.textContent = res.summary;
+    } catch (e) {
+      txtEl.textContent = '⚠ ' + e.message;
+      txtEl.style.color = 'var(--red)';
+    }
+  }
+
+  // ─── Setters ───
+  function setCat(cat, el) {
+    activeCat = cat;
+    document.querySelectorAll('#catList .nav-item').forEach(n => n.classList.remove('active'));
+    if (el) el.classList.add('active');
+    loadSchemes();
+  }
+
+  function setType(type, el) {
+    activeType = type;
+    document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('on'));
+    if (el) el.classList.add('on');
+    applyFilters();
+  }
+
+  function clearFilters() {
+    document.getElementById('gFilter').value = '';
+    document.getElementById('lFilter').value = '';
+    document.getElementById('eFilter').value = '';
+    document.getElementById('searchQ').value = '';
+    activeType = '';
+    document.querySelectorAll('.type-tab').forEach((t,i) => t.classList.toggle('on', i===0));
+    applyFilters();
+  }
+
+  function logout() {
+    if (confirm('Sign out and clear your profile?')) {
+      Profile.clear();
+      window.location.href = 'index.html';
+    }
+  }
+
+  // ─── Skeleton ───
+  function showSkeleton() {
+    document.getElementById('schemeList').innerHTML =
+      Array(6).fill(`<div class="skeleton skel-card"></div>`).join('');
+  }
+
+  // ─── Edit modal ───
+  function openEdit() { document.getElementById('editOverlay').classList.add('show'); }
+  function closeEdit() { document.getElementById('editOverlay').classList.remove('show'); }
+  document.getElementById('editOverlay').addEventListener('click', e => { if(e.target.id==='editOverlay') closeEdit(); });
+
+  function saveEdit() {
+    Object.assign(profile, {
+      name: document.getElementById('eName').value || profile.name,
+      age: parseInt(document.getElementById('eAge').value) || profile.age,
+      gender: document.getElementById('eGender').value,
+      state: document.getElementById('eState').value || profile.state,
+      occupation: document.getElementById('eOcc').value,
+      income: parseInt(document.getElementById('eIncome').value)||profile.income||0,
+      caste: document.getElementById('eCaste').value,
+      disability: document.getElementById('eDisab').value,
+    });
+    Profile.save(profile);
+    closeEdit();
+    init();
+    loadSchemes();
+  }
+
+  // ─── Receipt ───
+  function openReceipt() {
+    const eligible = allResults.filter(s => s.eligibility_status === 'yes').slice(0, 15);
+    const date = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+    document.getElementById('receiptBody').innerHTML = `
+      <div class="receipt-title">OPPORTUNITY RECEIPT</div>
+      <div class="receipt-sub">Opportunity OS · ${date}<br/>Name: ${profile.name} · State: ${profile.state}</div>
+      ${eligible.length ? eligible.map(s => `
+        <div class="receipt-item">
+          <div class="receipt-item-name">${s.name}</div>
+          <div class="receipt-item-benefit">${s.benefit}</div>
+          <div class="receipt-item-meta">${s.level} · ${s.category.split(',')[0]}</div>
+        </div>`).join('') : '<div style="text-align:center;padding:12px;color:var(--mid);">No directly eligible schemes found yet.</div>'}
+      <div style="font-size:10px;color:var(--light);margin-top:10px;text-align:center;">Take to nearest CSC / e-Sevai Centre</div>`;
+    document.getElementById('receiptOverlay').classList.add('show');
+  }
+
+  function closeReceipt() { document.getElementById('receiptOverlay').classList.remove('show'); }
+  document.getElementById('receiptOverlay').addEventListener('click', e => { if(e.target.id==='receiptOverlay') closeReceipt(); });
+
+  function printOne(id) {
+    const s = allResults.find(x => x.id === id);
+    if (!s) return;
+    const date = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+    document.getElementById('receiptBody').innerHTML = `
+      <div class="receipt-title">SCHEME RECEIPT</div>
+      <div class="receipt-sub">Opportunity OS · ${date}</div>
+      <div class="receipt-item">
+        <div class="receipt-item-name">${s.name}</div>
+        <div class="receipt-item-benefit">${s.benefit}</div>
+        <div class="receipt-item-meta">${s.eligibility}</div>
+        <div class="receipt-item-meta">${s.level} · ${s.category}</div>
+      </div>`;
+    document.getElementById('receiptOverlay').classList.add('show');
+  }
+
+  // ─── Debounce ───
+  function debounce(fn, ms) {
+    let t;
+    return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+  }
+
+  init();
+</script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register — Opportunity OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <style>
+    body { background: var(--white); }
+    .page {
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center;
+      padding: 32px 16px;
+    }
+    .wrap { width: 100%; max-width: 460px; }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--mid); text-decoration: none;
+      margin-bottom: 32px; font-weight: 500;
+    }
+    .back-link:hover { color: var(--dark); }
+    .brand-row { margin-bottom: 36px; }
+
+    .step-dots { display: flex; gap: 6px; margin-bottom: 28px; }
+    .step-dot {
+      height: 4px; flex: 1; border-radius: 10px;
+      background: var(--border); transition: background 0.3s;
+    }
+    .step-dot.active { background: var(--accent); }
+    .step-dot.done { background: #A7F3D0; }
+
+    .step-pane { display: none; }
+    .step-pane.active { display: block; }
+
+    .step-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--light); margin-bottom: 6px; }
+    .step-title { font-size: 26px; font-weight: 700; margin-bottom: 8px; line-height: 1.25; }
+    .step-sub { font-size: 14px; color: var(--mid); margin-bottom: 28px; line-height: 1.6; }
+
+    .aadhaar-preview {
+      background: var(--accent-soft); border: 1px solid rgba(37,99,235,0.15);
+      border-radius: 12px; padding: 16px 18px; margin-bottom: 24px;
+    }
+    .ap-name { font-size: 16px; font-weight: 700; }
+    .ap-row { display: flex; gap: 16px; margin-top: 5px; font-size: 13px; color: var(--mid); font-weight: 500; }
+    .ap-addr { font-size: 12px; color: var(--light); margin-top: 4px; }
+
+    .demo-row { margin-top: 16px; }
+    .demo-label { font-size: 11px; color: var(--light); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .demo-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .demo-pill {
+      padding: 5px 12px; border: 1px solid var(--border); border-radius: 100px;
+      font-size: 12px; font-weight: 600; color: var(--mid);
+      cursor: pointer; background: var(--white); transition: all 0.12s;
+    }
+    .demo-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+    .divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; }
+    .divider hr { flex: 1; border: none; border-top: 1px solid var(--border); }
+    .divider span { font-size: 12px; color: var(--light); }
+
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px);
+      background: var(--dark); color: #fff; padding: 10px 20px;
+      border-radius: 10px; font-size: 13px; font-weight: 500;
+      transition: transform 0.3s; opacity: 0; pointer-events: none; z-index: 999;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast-error { background: var(--red); }
+
+    .spinner {
+      display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="wrap">
+    <a class="back-link" href="index.html">← Back</a>
+    <div class="brand-row">
+      <div class="brand"><div class="brand-dot"></div>Opportunity OS</div>
+    </div>
+
+    <!-- Progress dots -->
+    <div class="step-dots">
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+    </div>
+
+    <!-- ─── Step 1: Aadhaar ─── -->
+    <div class="step-pane active" id="pane1">
+      <div class="step-label">Step 1 of 3</div>
+      <div class="step-title">Enter your Aadhaar</div>
+      <div class="step-sub">We'll auto-fill your name, age, gender, and address from our secure database.</div>
+
+      <div class="field">
+        <label>Aadhaar Number</label>
+        <input type="text" id="aadhaarInput" placeholder="1234 5678 9012" maxlength="14" autocomplete="off"/>
+        <span class="field-error" id="aadhaarErr">Please enter a valid 12-digit number</span>
+      </div>
+
+      <button class="btn btn-primary btn-full mt-16" id="btn1" onclick="step1Next()">Continue →</button>
+
+      <div class="divider" style="margin-top:18px;"><hr/><span>or</span><hr/></div>
+      <button class="btn btn-secondary btn-full" onclick="skipManual()">Fill manually without Aadhaar</button>
+
+      <div class="demo-row">
+        <div class="demo-label">Try a demo persona</div>
+        <div class="demo-pills">
+          <button class="demo-pill" onclick="fillDemo('1234 5678 9012')">Arun · Farmer</button>
+          <button class="demo-pill" onclick="fillDemo('9876 5432 1098')">Priya · Business</button>
+          <button class="demo-pill" onclick="fillDemo('4567 8901 2345')">Rajesh · Student</button>
+          <button class="demo-pill" onclick="fillDemo('3210 9876 5432')">Selvam · Mason</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Step 2: OTP ─── -->
+    <div class="step-pane" id="pane2">
+      <div class="step-label">Step 2 of 3</div>
+      <div class="step-title">Verify mobile</div>
+      <div class="step-sub">OTP sent to mobile ending in <strong id="phoneTail">XXXX</strong>. In demo, any 4 digits work.</div>
+
+      <!-- Aadhaar preview card -->
+      <div class="aadhaar-preview" id="aadhaarCard">
+        <div class="ap-name" id="apName">—</div>
+        <div class="ap-row">
+          <span id="apAge">—</span>
+          <span id="apGender">—</span>
+          <span id="apState">—</span>
+        </div>
+        <div class="ap-addr" id="apAddr">—</div>
+      </div>
+
+      <div class="otp-grid">
+        <input id="o1" type="text" maxlength="1" inputmode="numeric" oninput="otpNext(this,'o2')" onfocus="this.select()"/>
+        <input id="o2" type="text" maxlength="1" inputmode="numeric" oninput="otpNext(this,'o3')" onfocus="this.select()"/>
+        <input id="o3" type="text" maxlength="1" inputmode="numeric" oninput="otpNext(this,'o4')" onfocus="this.select()"/>
+        <input id="o4" type="text" maxlength="1" inputmode="numeric" onfocus="this.select()"/>
+      </div>
+
+      <button class="btn btn-primary btn-full" id="btn2" onclick="step2Next()">Verify & Continue →</button>
+      <button class="btn btn-ghost btn-full mt-8" onclick="goStep(1)">← Change Aadhaar</button>
+    </div>
+
+    <!-- ─── Step 3: Profile ─── -->
+    <div class="step-pane" id="pane3">
+      <div class="step-label">Step 3 of 3</div>
+      <div class="step-title">Complete profile</div>
+      <div class="step-sub">A few more details help us find the right schemes. Fields marked with Aadhaar are auto-filled.</div>
+
+      <div class="aadhaar-preview" id="profilePreview" style="display:none">
+        <div class="ap-name" id="pp_name">—</div>
+        <div class="ap-row"><span id="pp_age">—</span><span id="pp_gender">—</span><span id="pp_state">—</span></div>
+        <div class="ap-addr" id="pp_addr">—</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label>Occupation</label>
+          <input type="text" id="f_occ" placeholder="e.g. Farmer, Student"/>
+        </div>
+        <div class="field">
+          <label>Annual Income (₹)</label>
+          <input type="number" id="f_income" placeholder="e.g. 80000"/>
+        </div>
+        <div class="field">
+          <label>Caste Category</label>
+          <select id="f_caste">
+            <option value="General">General</option>
+            <option value="OBC">OBC</option><option value="SC">SC</option>
+            <option value="ST">ST</option><option value="MBC">MBC</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Education Level</label>
+          <select id="f_edu">
+            <option value="Primary">Primary (up to 8th)</option>
+            <option value="Secondary">Secondary (10th)</option>
+            <option value="HSC">Higher Secondary (12th)</option>
+            <option value="Graduate">Graduate</option>
+            <option value="Postgraduate">Postgraduate</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Residence</label>
+          <select id="f_res">
+            <option value="Rural">Rural</option>
+            <option value="Urban">Urban</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Marital Status</label>
+          <select id="f_marital">
+            <option value="Single">Single</option>
+            <option value="Married">Married</option>
+            <option value="Widowed">Widowed</option>
+            <option value="Divorced">Divorced</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Disability</label>
+          <select id="f_disability">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Majority / Minority</label>
+          <select id="f_minority">
+            <option value="Majority">Majority</option>
+            <option value="Minority">Minority</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Govt. Employee?</label>
+          <select id="f_govt">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Student?</label>
+          <select id="f_student">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>State</label>
+          <select id="f_state">
+            <option>Tamil Nadu</option><option>Karnataka</option><option>Kerala</option>
+            <option>Andhra Pradesh</option><option>Telangana</option>
+            <option>Maharashtra</option><option>Rajasthan</option>
+            <option>Delhi</option><option>West Bengal</option>
+            <option>Uttar Pradesh</option><option>Gujarat</option>
+            <option>Punjab</option><option>Bihar</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Pincode</label>
+          <input type="text" id="f_pincode" placeholder="6-digit pincode" maxlength="6" inputmode="numeric"/>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-full mt-16" id="btn3" onclick="finish()">Find My Schemes →</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="js/api.js"></script>
+<script>
+  let currentStep = 1;
+  let aadhaarData = {};
+
+  // Redirect if already registered
+  if (Profile.load()) window.location.href = 'dashboard.html';
+
+  // Format Aadhaar input
+  document.getElementById('aadhaarInput').addEventListener('input', function () {
+    let v = this.value.replace(/\D/g,'').slice(0,12);
+    this.value = v.replace(/(\d{4})(?=\d)/g,'$1 ');
+  });
+
+  function fillDemo(num) {
+    document.getElementById('aadhaarInput').value = num;
+    document.getElementById('aadhaarErr').classList.remove('show');
+  }
+
+  function setDots(step) {
+    [1,2,3].forEach(i => {
+      const d = document.getElementById('dot'+i);
+      d.classList.remove('active','done');
+      if (i === step) d.classList.add('active');
+      else if (i < step) d.classList.add('done');
+    });
+  }
+
+  function goStep(n) {
+    document.querySelectorAll('.step-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById('pane'+n).classList.add('active');
+    setDots(n);
+    currentStep = n;
+    window.scrollTo(0,0);
+  }
+
+  function setLoading(btnId, loading) {
+    const b = document.getElementById(btnId);
+    if (loading) {
+      b.disabled = true;
+      b.innerHTML = `<span class="spinner"></span> Please wait…`;
+    } else {
+      b.disabled = false;
+    }
+  }
+
+  async function step1Next() {
+    const raw = document.getElementById('aadhaarInput').value.replace(/\s/g,'');
+    if (raw.length !== 12) {
+      document.getElementById('aadhaarErr').classList.add('show');
+      return;
+    }
+    document.getElementById('aadhaarErr').classList.remove('show');
+    setLoading('btn1', true);
+    try {
+      const res = await api.verifyAadhaar(raw);
+      aadhaarData = { ...res.data, aadhaar: raw };
+
+      // Populate OTP step
+      document.getElementById('phoneTail').textContent = res.phone_tail;
+      document.getElementById('apName').textContent = aadhaarData.name;
+      document.getElementById('apAge').textContent = aadhaarData.age + ' yrs';
+      document.getElementById('apGender').textContent = aadhaarData.gender;
+      document.getElementById('apState').textContent = aadhaarData.state;
+      document.getElementById('apAddr').textContent = '📍 ' + (aadhaarData.address || '');
+
+      goStep(2);
+      document.getElementById('o1').focus();
+    } catch (e) {
+      toast(e.message, 'error');
+    } finally {
+      document.getElementById('btn1').disabled = false;
+      document.getElementById('btn1').innerHTML = 'Continue →';
+    }
+  }
+
+  function skipManual() {
+    aadhaarData = { aadhaar: 'None', name: '', age: '', gender: '', state: 'Tamil Nadu', pincode: '', address: '' };
+    goStep(3);
+    document.getElementById('profilePreview').style.display = 'none';
+  }
+
+  function otpNext(el, nextId) {
+    el.classList.toggle('filled', el.value.length === 1);
+    if (el.value.length === 1) document.getElementById(nextId).focus();
+  }
+
+  async function step2Next() {
+    const otp = ['o1','o2','o3','o4'].map(id => document.getElementById(id).value).join('');
+    if (otp.length < 4) { toast('Enter 4-digit OTP', 'error'); return; }
+    setLoading('btn2', true);
+    try {
+      await api.verifyOTP(aadhaarData.aadhaar, otp);
+
+      // Pre-fill step 3
+      if (aadhaarData.occupation) document.getElementById('f_occ').value = aadhaarData.occupation;
+      if (aadhaarData.income)     document.getElementById('f_income').value = aadhaarData.income;
+      if (aadhaarData.caste)      document.getElementById('f_caste').value = aadhaarData.caste;
+      if (aadhaarData.state)      document.getElementById('f_state').value = aadhaarData.state;
+      if (aadhaarData.pincode)    document.getElementById('f_pincode').value = aadhaarData.pincode;
+      if (aadhaarData.disability === 'yes') document.getElementById('f_disability').value = 'yes';
+
+      // Profile preview in step 3
+      const pp = document.getElementById('profilePreview');
+      pp.style.display = 'block';
+      document.getElementById('pp_name').textContent = aadhaarData.name;
+      document.getElementById('pp_age').textContent = aadhaarData.age + ' yrs';
+      document.getElementById('pp_gender').textContent = aadhaarData.gender;
+      document.getElementById('pp_state').textContent = aadhaarData.state;
+      document.getElementById('pp_addr').textContent = '📍 ' + (aadhaarData.address || '');
+
+      goStep(3);
+    } catch(e) {
+      toast(e.message, 'error');
+    } finally {
+      document.getElementById('btn2').disabled = false;
+      document.getElementById('btn2').innerHTML = 'Verify & Continue →';
+    }
+  }
+
+  function finish() {
+    const profile = {
+      aadhaar: aadhaarData.aadhaar || 'None',
+      name: aadhaarData.name || 'User',
+      age: parseInt(aadhaarData.age) || 30,
+      gender: aadhaarData.gender || 'Male',
+      address: aadhaarData.address || '',
+      pincode: document.getElementById('f_pincode').value || aadhaarData.pincode || '',
+      state: document.getElementById('f_state').value,
+      occupation: document.getElementById('f_occ').value || 'Not specified',
+      income: parseInt(document.getElementById('f_income').value) || aadhaarData.income || 0,
+      caste: document.getElementById('f_caste').value,
+      education: document.getElementById('f_edu').value,
+      residence: document.getElementById('f_res').value,
+      marital: document.getElementById('f_marital').value,
+      disability: document.getElementById('f_disability').value,
+      minority: document.getElementById('f_minority').value,
+      govt_employee: document.getElementById('f_govt').value,
+      is_student: document.getElementById('f_student').value,
+    };
+    Profile.save(profile);
+    window.location.href = 'dashboard.html';
+  }
+</script>
+</body>
+</html>

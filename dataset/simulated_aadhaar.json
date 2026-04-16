@@ -1,0 +1,67 @@
+[
+  {
+    "aadhaar_number": "1234 5678 9012",
+    "full_name": "Arun Kumar",
+    "dob": "1981-05-15",
+    "gender": "Male",
+    "address": "No 42, Pillayar Kovil Street, Melmaruvathur, Kanchipuram, Tamil Nadu - 603319",
+    "phone": "+91 9845012345",
+    "occupation": "Farmer",
+    "annual_income": 85000,
+    "household_size": 5,
+    "disability_status": "No",
+    "caste_category": "OBC"
+  },
+  {
+    "aadhaar_number": "9876 5432 1098",
+    "full_name": "Priya Subramanian",
+    "dob": "1994-11-20",
+    "gender": "Female",
+    "address": "Door 12B, West Mada Street, Mylapore, Chennai, Tamil Nadu - 600004",
+    "phone": "+91 9962054321",
+    "occupation": "Small Business Owner",
+    "annual_income": 120000,
+    "household_size": 3,
+    "disability_status": "No",
+    "caste_category": "General"
+  },
+  {
+    "aadhaar_number": "4567 8901 2345",
+    "full_name": "Rajesh V",
+    "dob": "2005-08-10",
+    "gender": "Male",
+    "address": "4/156, Middle Street, Vadipatti, Madurai, Tamil Nadu - 625218",
+    "phone": "+91 9500011223",
+    "occupation": "Student",
+    "annual_income": 40000,
+    "household_size": 4,
+    "disability_status": "No",
+    "caste_category": "SC"
+  },
+  {
+    "aadhaar_number": "5678 1234 9012",
+    "full_name": "Kavitha R",
+    "dob": "1976-03-25",
+    "gender": "Female",
+    "address": "Plot No 8, Annai Sathya Nagar, Hosur, Krishnagiri, Tamil Nadu - 635109",
+    "phone": "+91 9443044556",
+    "occupation": "Unemployed / Housewife",
+    "annual_income": 30000,
+    "household_size": 4,
+    "disability_status": "No",
+    "caste_category": "OBC"
+  },
+  {
+    "aadhaar_number": "3210 9876 5432",
+    "full_name": "Selvam M",
+    "dob": "1966-07-30",
+    "gender": "Male",
+    "address": "21, Market Road, Polur, Tiruvannamalai, Tamil Nadu - 606803",
+    "phone": "+91 9865077889",
+    "occupation": "Mason",
+    "annual_income": 95000,
+    "household_size": 2,
+    "disability_status": "Yes",
+    "caste_category": "MBC"
+  }
+]

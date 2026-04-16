@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Opportunity OS — Find What You Deserve</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F8FAFC;
+      --dark: #1E293B;
+      --mid: #64748B;
+      --accent: #3B82F6;
+      --accent-light: #EFF6FF;
+      --border: #E2E8F0;
+      --card: #ffffff;
+      --green: #10B981;
+      --yellow: #F59E0B;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 48px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+    nav .nav-links { display: flex; gap: 24px; align-items: center; }
+    nav .nav-links a { text-decoration: none; color: var(--mid); font-size: 14px; font-weight: 500; }
+    nav .nav-links a:hover { color: var(--dark); }
+    .btn-nav {
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+    }
+
+    /* HERO */
+    .hero {
+      max-width: 900px;
+      margin: 72px auto 0;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-light);
+      color: var(--accent);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 54px);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--dark);
+      margin-bottom: 20px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p {
+      font-size: 17px;
+      color: var(--mid);
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      text-decoration: none;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59,130,246,0.3); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--dark);
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      transition: border-color 0.15s;
+      text-decoration: none;
+    }
+    .btn-secondary:hover { border-color: var(--mid); }
+
+    /* STATS */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin: 64px auto;
+      max-width: 700px;
+      padding: 0 24px;
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 32px; font-weight: 700; color: var(--dark); }
+    .stat-label { font-size: 13px; color: var(--mid); margin-top: 4px; }
+
+    /* FEATURES */
+    .section { max-width: 1100px; margin: 0 auto; padding: 64px 24px; }
+    .section-title { font-size: 28px; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+    .section-sub { font-size: 15px; color: var(--mid); margin-bottom: 40px; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .feat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .feat-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .feat-icon {
+      width: 44px; height: 44px;
+      background: var(--accent-light);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    .feat-title { font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+    .feat-desc { font-size: 13px; color: var(--mid); line-height: 1.6; }
+
+    /* COMMUNITY VERIFICATION */
+    .verification-shell {
+      background: linear-gradient(180deg, #fff 0%, #F8FBFF 100%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+    }
+    .verification-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .verification-copy {
+      max-width: 720px;
+    }
+    .verification-copy p {
+      font-size: 14px;
+      color: var(--mid);
+      line-height: 1.7;
+      margin-top: 10px;
+    }
+    .verification-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 8px 12px;
+      background: var(--accent-light);
+      color: var(--accent);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .role-toggle {
+      display: inline-flex;
+      gap: 8px;
+      padding: 8px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .role-btn {
+      border: none;
+      background: transparent;
+      color: var(--mid);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .role-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(59,130,246,0.18);
+    }
+    .verification-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .verify-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 28px rgba(15,23,42,0.04);
+    }
+    .verify-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .verify-kicker {
+      font-size: 11px;
+      color: var(--mid);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .verify-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.3;
+    }
+    .verify-desc {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.7;
+      margin: 10px 0 16px;
+    }
+    .verdict-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .verdict-badge.neutral { background: #F1F5F9; color: #475569; }
+    .verdict-badge.completed { background: #ECFDF5; color: #047857; }
+    .verdict-badge.expired { background: #FFFBEB; color: #B45309; }
+    .verdict-badge.fake { background: #FEF2F2; color: #B91C1C; }
+    .verify-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .verify-pill {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--mid);
+    }
+    .verify-counts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .verify-count {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: #FCFDFF;
+    }
+    .verify-count-label {
+      font-size: 11px;
+      color: var(--mid);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .verify-count-score {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .verify-count-votes {
+      font-size: 11px;
+      color: var(--mid);
+      margin-top: 3px;
+    }
+    .verify-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .verify-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--dark);
+      border-radius: 12px;
+      padding: 11px 10px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .verify-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(15,23,42,0.08);
+    }
+    .verify-btn.completed:hover { border-color: var(--green); color: var(--green); }
+    .verify-btn.expired:hover { border-color: var(--yellow); color: #B45309; }
+    .verify-btn.fake:hover { border-color: #FCA5A5; color: #B91C1C; }
+
+    /* HOW IT WORKS */
+    .steps { display: flex; gap: 32px; flex-wrap: wrap; margin-top: 40px; }
+    .step { flex: 1; min-width: 200px; display: flex; gap: 16px; align-items: flex-start; }
+    .step-num {
+      width: 36px; height: 36px; min-width: 36px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700;
+    }
+    .step-text h4 { font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 4px; }
+    .step-text p { font-size: 13px; color: var(--mid); line-height: 1.6; }
+
+    /* DIVIDER */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+    /* CTA BANNER */
+    .cta-banner {
+      background: var(--dark);
+      color: #fff;
+      text-align: center;
+      padding: 64px 24px;
+      margin: 0;
+    }
+    .cta-banner h2 { font-size: 30px; font-weight: 700; margin-bottom: 12px; }
+    .cta-banner p { font-size: 15px; color: #94A3B8; margin-bottom: 32px; }
+    .cta-banner .btn-primary { background: var(--accent); }
+
+    /* LOGIN MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(15,23,42,0.55);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 18px;
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.15);
+      position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 20px;
+      background: none; border: none; font-size: 20px;
+      cursor: pointer; color: var(--mid);
+    }
+    .modal-logo { font-size: 16px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .modal h2 { font-size: 22px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .modal-sub { font-size: 13px; color: var(--mid); margin-bottom: 28px; }
+
+    .tab-row { display: flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 28px; }
+    .tab-btn {
+      flex: 1; padding: 10px;
+      background: transparent; border: none;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      color: var(--mid); transition: all 0.2s;
+    }
+    .tab-btn.active { background: var(--accent); color: #fff; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: var(--mid); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 7px; }
+    .form-group input {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px; font-family: inherit;
+      color: var(--dark); outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: var(--accent); }
+    .form-group input::placeholder { color: #CBD5E1; }
+
+    .otp-row { display: flex; gap: 8px; }
+    .otp-row input { text-align: center; font-size: 20px; font-weight: 700; letter-spacing: 4px; }
+
+    .btn-full {
+      width: 100%; padding: 14px;
+      background: var(--accent);
+      color: #fff; border: none;
+      border-radius: 10px;
+      font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: opacity 0.15s;
+    }
+    .btn-full:hover { opacity: 0.9; }
+
+    .step-indicator {
+      display: flex; gap: 6px; justify-content: center; margin-bottom: 24px;
+    }
+    .step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+    .step-dot.active { background: var(--accent); width: 18px; border-radius: 3px; }
+
+    .hint { font-size: 12px; color: var(--mid); text-align: center; margin-top: 14px; }
+    .hint a { color: var(--accent); cursor: pointer; }
+
+    /* STEP PANELS */
+    .login-step { display: none; }
+    .login-step.active { display: block; }
+
+    /* FOOTER */
+    footer {
+      background: #fff;
+      border-top: 1px solid var(--border);
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    footer .logo { font-size: 15px; }
+    footer p { font-size: 13px; color: var(--mid); }
+
+    @media (max-width: 640px) {
+      .verification-shell { padding: 24px 18px; }
+      .verify-counts, .verify-actions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Opportunity OS
+  </div>
+  <div class="nav-links">
+    <a href="#">How it works</a>
+    <a href="#">Schemes</a>
+    <a href="../operator/index.html">Operator</a>
+    <button class="btn-nav" onclick="openModal()">Get Started</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🇮🇳 Government Schemes · Jobs · Training</div>
+  <h1>Find Every Opportunity<br/><span>You Deserve</span></h1>
+  <p>Enter your Aadhaar number and instantly discover all government schemes, jobs, and programs you qualify for — personalized just for you.</p>
+  <div class="hero-cta">
+    <button class="btn-primary" onclick="openModal()">Check My Eligibility</button>
+    <a class="btn-secondary" href="../operator/index.html">Operator Login →</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">3,400+</div>
+    <div class="stat-label">Government Schemes</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">29</div>
+    <div class="stat-label">States & UTs Covered</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">12</div>
+    <div class="stat-label">Scheme Categories</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Free to Use</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section">
+  <div class="section-title">Why Opportunity OS?</div>
+  <div class="section-sub">Everything in one place, personalized for your profile</div>
+  <div class="cards-grid">
+    <div class="feat-card">
+      <div class="feat-icon">🎯</div>
+      <div class="feat-title">Personalized Matching</div>
+      <div class="feat-desc">We match schemes to your exact profile — age, income, occupation, caste, and location.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🪪</div>
+      <div class="feat-title">Aadhaar-Based</div>
+      <div class="feat-desc">Just enter your Aadhaar number. We auto-fill your profile and find what you're eligible for.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📋</div>
+      <div class="feat-title">Printable Receipt</div>
+      <div class="feat-desc">Print a receipt of all your eligible schemes to take to the nearest CSC or e-Sevai centre.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🔍</div>
+      <div class="feat-title">Smart Filters</div>
+      <div class="feat-desc">Filter by category, state, age group, caste, gender, and more. Find exactly what you need.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🗣️</div>
+      <div class="feat-title">Simple Language</div>
+      <div class="feat-desc">Complex scheme details simplified into easy-to-understand summaries for everyone.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📡</div>
+      <div class="feat-title">Always Updated</div>
+      <div class="feat-desc">Scheme data is updated regularly from official government sources across all states.</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section" style="background:#fff; border-top:1px solid var(--border); border-bottom:1px solid var(--border); max-width:100%;">
+  <div style="max-width:1100px; margin:0 auto;">
+    <div class="section-title">How it works</div>
+    <div class="section-sub">Three simple steps to your personalized opportunity list</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <h4>Enter Aadhaar Number</h4>
+          <p>We auto-fetch your name, age, gender, address, and pincode from our secure simulated database.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <h4>Confirm Your Profile</h4>
+          <p>Add a few more details like occupation, income, and caste to improve your scheme matching accuracy.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <h4>See Your Matches</h4>
+          <p>Browse all schemes you're eligible for, filter by category, and get a printable receipt for any scheme.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMMUNITY VERIFICATION -->
+<div class="section">
+  <div class="verification-shell">
+    <div class="verification-head">
+      <div class="verification-copy">
+        <div class="section-title" style="margin-bottom:0;">Community Feedback & Verification Loop</div>
+        <div class="section-sub" style="margin-bottom:0;">Local signals help clean up noisy opportunity data and build trust.</div>
+        <p>People on the ground can flag an opportunity as <strong>Completed</strong>, <strong>Expired</strong>, or <strong>Fake</strong>. For this demo, operator feedback carries more weight than citizen feedback so spam has less impact on the final community verdict.</p>
+        <div class="verification-note" id="roleWeightNote">Citizen votes count as 1x in this demo.</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;">Vote as</div>
+        <div class="role-toggle" id="roleToggle">
+          <button class="role-btn active" type="button" onclick="setVerificationRole('citizen')">👤 Citizen</button>
+          <button class="role-btn" type="button" onclick="setVerificationRole('operator')">🏛️ Operator</button>
+        </div>
+      </div>
+    </div>
+    <div class="verification-grid" id="verificationGrid"></div>
+  </div>
+</div>
+
+<!-- CTA BANNER -->
+<div class="cta-banner">
+  <h2>Don't miss what you deserve</h2>
+  <p>Thousands of schemes go unclaimed because people don't know about them. Check now.</p>
+  <button class="btn-primary" onclick="openModal()">Check My Eligibility — It's Free</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo"><div class="logo-dot"></div> Opportunity OS</div>
+  <p>© 2025 Opportunity OS · Hackathon Demo · Data from MyScheme.gov.in</p>
+</footer>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-logo">🔵 Opportunity OS</div>
+
+    <div class="tab-row" id="loginTabRow">
+      <button class="tab-btn active" onclick="setTab('user')">👤 Citizen</button>
+      <button class="tab-btn" onclick="setTab('operator')">🏛️ Operator</button>
+    </div>
+
+    <!-- STEP 1: Aadhaar -->
+    <div class="login-step active" id="step1">
+      <div class="step-indicator">
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+      </div>
+      <h2 id="step1-title">Enter Aadhaar Number</h2>
+      <p class="modal-sub" id="step1-sub">We'll auto-detect your profile details</p>
+      <div class="form-group">
+        <label>Aadhaar Number</label>
+        <input type="text" id="aadhaarInput" placeholder="XXXX XXXX XXXX" maxlength="14" oninput="formatAadhaar(this)"/>
+      </div>
+      <button class="btn-full" onclick="handleAadhaar()">Continue →</button>
+      <p class="hint">Demo: use any 12-digit number ·<a onclick="fillDemo()"> Use a demo number</a></p>
+    </div>
+
+    <!-- STEP 2: OTP -->
+    <div class="login-step" id="step2">
+      <div class="step-indicator">
+        <div class="step-dot"></div>
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+      </div>
+      <h2>Verify OTP</h2>
+      <p class="modal-sub" id="otpHint">Enter any 4-digit code (demo mode)</p>
+      <div class="form-group">
+        <label>One-Time Password</label>
+        <div class="otp-row">
+          <input type="text" maxlength="4" id="otpInput" placeholder="••••" style="letter-spacing:8px;"/>
+        </div>
+      </div>
+      <button class="btn-full" onclick="handleOTP()">Verify →</button>
+      <p class="hint"><a onclick="goStep(1)">← Change Aadhaar</a></p>
+    </div>
+
+    <!-- STEP 3: Profile confirm -->
+    <div class="login-step" id="step3">
+      <div class="step-indicator">
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot active"></div>
+      </div>
+      <h2>Confirm Your Profile</h2>
+      <p class="modal-sub">Auto-detected from Aadhaar · Add occupation</p>
+
+      <div style="background:var(--accent-light);border-radius:10px;padding:14px;margin-bottom:20px;">
+        <div style="font-size:13px;color:var(--dark);font-weight:600;" id="profileName">—</div>
+        <div style="font-size:12px;color:var(--mid);margin-top:4px;" id="profileMeta">—</div>
+        <div style="font-size:12px;color:var(--mid);margin-top:2px;" id="profileAddr">—</div>
+      </div>
+
+      <div class="form-group">
+        <label>Occupation</label>
+        <input type="text" id="occupationInput" placeholder="e.g. Farmer, Student, Daily wages..."/>
+      </div>
+      <div class="form-group">
+        <label>Mobile Number</label>
+        <input type="text" id="mobileInput" placeholder="10-digit mobile number" maxlength="10"/>
+      </div>
+      <button class="btn-full" onclick="handleLogin()">View My Schemes →</button>
+    </div>
+
+    <!-- OPERATOR STEP -->
+    <div class="login-step" id="stepOperator">
+      <h2>Operator Login</h2>
+      <p class="modal-sub">e-Sevai · Ration Shop · NGO Worker</p>
+      <div class="form-group">
+        <label>Employee ID / Code</label>
+        <input type="text" id="opId" placeholder="e.g. TN-OP-1234"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="opPass" placeholder="••••••••"/>
+      </div>
+      <button class="btn-full" onclick="handleOpLogin()">Login to Dashboard →</button>
+      <p class="hint">Demo: any ID + password works</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const VERIFICATION_STORAGE_KEY = 'opp_verification_demo';
+  const ROLE_WEIGHTS = { citizen: 1, operator: 3 };
+  const VERIFICATION_ITEMS = [
+    {
+      id: 'eye-camp-tn',
+      title: 'Free Eye Check-up Camp',
+      location: 'Coimbatore, Tamil Nadu',
+      source: 'District Health Camp',
+      deadline: '18 Apr 2026',
+      description: 'Free eye screening and low-cost prescription glasses for local residents and senior citizens.'
+    },
+    {
+      id: 'skill-van',
+      title: 'Mobile Skill Training Van',
+      location: 'Madurai, Tamil Nadu',
+      source: 'Rural Skills Mission',
+      deadline: '22 Apr 2026',
+      description: 'A travelling registration drive for short digital and tailoring courses with placement support.'
+    },
+    {
+      id: 'farm-subsidy',
+      title: 'Seasonal Drip Irrigation Subsidy',
+      location: 'Erode, Tamil Nadu',
+      source: 'Block Agriculture Office',
+      deadline: '30 Apr 2026',
+      description: 'Local enrollment support for farmers applying for water-saving irrigation equipment assistance.'
+    }
+  ];
+  const DEFAULT_VERIFICATION_STATE = {
+    selectedRole: 'citizen',
+    votesByItem: {
+      'eye-camp-tn': [
+        { role: 'citizen', status: 'completed', createdAt: '2026-04-14T10:00:00.000Z' },
+        { role: 'operator', status: 'completed', createdAt: '2026-04-15T09:15:00.000Z' },
+        { role: 'citizen', status: 'expired', createdAt: '2026-04-15T12:30:00.000Z' }
+      ],
+      'skill-van': [
+        { role: 'citizen', status: 'completed', createdAt: '2026-04-14T14:45:00.000Z' },
+        { role: 'citizen', status: 'expired', createdAt: '2026-04-15T08:00:00.000Z' }
+      ],
+      'farm-subsidy': [
+        { role: 'operator', status: 'fake', createdAt: '2026-04-15T11:00:00.000Z' },
+        { role: 'citizen', status: 'completed', createdAt: '2026-04-15T16:10:00.000Z' }
+      ]
+    }
+  };
+
+  let verificationState = loadVerificationState();
+  const DEMO_AADHAAR_DB = {
+    "234567890123": { name: "Arjun Ravi Kumar", dob: "1990-05-12", age: 34, gender: "Male", address: "12 Gandhi Nagar, Coimbatore", pincode: "641001", state: "Tamil Nadu" },
+    "345678901234": { name: "Priya Sundaresan",  dob: "1998-03-22", age: 26, gender: "Female", address: "45 Anna Salai, Chennai", pincode: "600002", state: "Tamil Nadu" },
+    "456789012345": { name: "Ramu Krishnaswamy", dob: "1975-11-08", age: 49, gender: "Male", address: "7 Nehru Street, Madurai", pincode: "625001", state: "Tamil Nadu" },
+    "567890123456": { name: "Kavitha Subramaniam",dob: "1985-07-30", age: 38, gender: "Female", address: "89 MG Road, Salem", pincode: "636001", state: "Tamil Nadu" },
+    "678901234567": { name: "Senthil Murugan",   dob: "2001-01-15", age: 23, gender: "Male", address: "3 Periyar Nagar, Trichy", pincode: "620001", state: "Tamil Nadu" },
+    "789012345678": { name: "Anitha Ramachandran",dob: "1969-09-20", age: 55, gender: "Female", address: "22 Bharat Nagar, Tirunelveli", pincode: "627001", state: "Tamil Nadu" },
+    "890123456789": { name: "Mani Velayutham",   dob: "1993-12-05", age: 31, gender: "Male", address: "56 Subash Road, Erode", pincode: "638001", state: "Tamil Nadu" },
+    "901234567890": { name: "Deepa Natarajan",   dob: "2002-06-18", age: 22, gender: "Female", address: "17 Patel Nagar, Vellore", pincode: "632001", state: "Tamil Nadu" },
+    "112233445566": { name: "Balaji Srinivasan",  dob: "1980-04-25", age: 44, gender: "Male", address: "33 Rajiv Gandhi Street, Kochi", pincode: "682001", state: "Kerala" },
+    "223344556677": { name: "Lakshmi Devi",       dob: "1972-08-14", age: 52, gender: "Female", address: "10 Station Road, Bengaluru", pincode: "560001", state: "Karnataka" },
+  };
+
+  let currentTab = 'user';
+  let currentStep = 1;
+  let detectedProfile = null;
+
+  function openModal() {
+    document.getElementById('loginModal').classList.add('open');
+    goStep(1);
+  }
+  function closeModal() {
+    document.getElementById('loginModal').classList.remove('open');
+  }
+  document.getElementById('loginModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  function setTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (i===0&&tab==='user')||(i===1&&tab==='operator')));
+    if (tab === 'operator') {
+      document.querySelectorAll('.login-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('stepOperator').classList.add('active');
+    } else {
+      goStep(1);
+    }
+  }
+
+  function goStep(n) {
+    currentStep = n;
+    document.querySelectorAll('.login-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step'+n).classList.add('active');
+  }
+
+  function formatAadhaar(inp) {
+    let v = inp.value.replace(/\D/g,'').slice(0,12);
+    inp.value = v.replace(/(\d{4})(?=\d)/g,'$1 ');
+  }
+
+  function fillDemo() {
+    document.getElementById('aadhaarInput').value = '2345 6789 0123';
+  }
+
+  function handleAadhaar() {
+    const raw = document.getElementById('aadhaarInput').value.replace(/\s/g,'');
+    if (raw.length !== 12) { alert('Please enter a valid 12-digit Aadhaar number'); return; }
+    detectedProfile = DEMO_AADHAAR_DB[raw] || generateFallback(raw);
+    goStep(2);
+    document.getElementById('otpHint').textContent = `OTP sent to registered mobile of ${detectedProfile.name} (demo: any 4 digits)`;
+  }
+
+  function generateFallback(raw) {
+    const names = ["Ramesh Kumar","Sunita Devi","Vijay Singh","Ananya Sharma","Mohan Das"];
+    const cities = ["Delhi","Mumbai","Kolkata","Hyderabad","Pune"];
+    const states = ["Delhi","Maharashtra","West Bengal","Telangana","Maharashtra"];
+    const idx = parseInt(raw[0]) % 5;
+    return { name: names[idx], dob: "1988-06-15", age: 36, gender: idx%2===0?"Male":"Female",
+             address: `${raw.slice(-3)} MG Road, ${cities[idx]}`, pincode: `${500000+parseInt(raw.slice(-5)%99999)}`, state: states[idx] };
+  }
+
+  function handleOTP() {
+    const otp = document.getElementById('otpInput').value;
+    if (otp.length < 4) { alert('Please enter a 4-digit OTP'); return; }
+    document.getElementById('profileName').textContent = detectedProfile.name;
+    document.getElementById('profileMeta').textContent = `${detectedProfile.age} yrs · ${detectedProfile.gender} · ${detectedProfile.state}`;
+    document.getElementById('profileAddr').textContent = `📍 ${detectedProfile.address} — ${detectedProfile.pincode}`;
+    goStep(3);
+  }
+
+  function handleLogin() {
+    sessionStorage.setItem('opp_profile', JSON.stringify({
+      ...detectedProfile,
+      occupation: document.getElementById('occupationInput').value || 'Not specified',
+      mobile: document.getElementById('mobileInput').value || '9999999999',
+    }));
+    window.location.href = '../user/index.html';
+  }
+
+  function handleOpLogin() {
+    window.location.href = '../operator/index.html';
+  }
+
+  function loadVerificationState() {
+    try {
+      const saved = localStorage.getItem(VERIFICATION_STORAGE_KEY);
+      if (!saved) return JSON.parse(JSON.stringify(DEFAULT_VERIFICATION_STATE));
+      const parsed = JSON.parse(saved);
+      return {
+        selectedRole: parsed.selectedRole === 'operator' ? 'operator' : 'citizen',
+        votesByItem: parsed.votesByItem || JSON.parse(JSON.stringify(DEFAULT_VERIFICATION_STATE.votesByItem))
+      };
+    } catch {
+      return JSON.parse(JSON.stringify(DEFAULT_VERIFICATION_STATE));
+    }
+  }
+
+  function saveVerificationState() {
+    localStorage.setItem(VERIFICATION_STORAGE_KEY, JSON.stringify(verificationState));
+  }
+
+  function setVerificationRole(role) {
+    verificationState.selectedRole = role === 'operator' ? 'operator' : 'citizen';
+    saveVerificationState();
+    renderVerificationCards();
+  }
+
+  function submitVerification(itemId, status) {
+    const itemVotes = verificationState.votesByItem[itemId] || [];
+    itemVotes.push({
+      role: verificationState.selectedRole,
+      status,
+      createdAt: new Date().toISOString()
+    });
+    verificationState.votesByItem[itemId] = itemVotes;
+    saveVerificationState();
+    renderVerificationCards();
+  }
+
+  function summarizeVerification(itemId) {
+    const votes = verificationState.votesByItem[itemId] || [];
+    const summary = {
+      completed: { weighted: 0, votes: 0 },
+      expired: { weighted: 0, votes: 0 },
+      fake: { weighted: 0, votes: 0 }
+    };
+
+    votes.forEach(vote => {
+      if (!summary[vote.status]) return;
+      summary[vote.status].votes += 1;
+      summary[vote.status].weighted += ROLE_WEIGHTS[vote.role] || 1;
+    });
+
+    return summary;
+  }
+
+  function getVerificationVerdict(summary) {
+    const entries = Object.entries(summary).sort((a, b) => b[1].weighted - a[1].weighted);
+    const [topStatus, topData] = entries[0];
+    const secondScore = entries[1][1].weighted;
+
+    if (topData.weighted < 2 || topData.weighted === secondScore) {
+      return { key: 'neutral', label: 'Needs more verification' };
+    }
+
+    const labels = {
+      completed: 'Likely completed',
+      expired: 'Likely expired',
+      fake: 'Likely fake'
+    };
+
+    return { key: topStatus, label: labels[topStatus] };
+  }
+
+  function renderVerificationCards() {
+    const grid = document.getElementById('verificationGrid');
+    const roleButtons = document.querySelectorAll('#roleToggle .role-btn');
+    const weightNote = document.getElementById('roleWeightNote');
+    if (!grid || !weightNote) return;
+
+    roleButtons.forEach(btn => {
+      const isOperator = btn.textContent.includes('Operator');
+      btn.classList.toggle('active', isOperator ? verificationState.selectedRole === 'operator' : verificationState.selectedRole === 'citizen');
+    });
+
+    const activeWeight = ROLE_WEIGHTS[verificationState.selectedRole];
+    weightNote.textContent = verificationState.selectedRole === 'operator'
+      ? `Operator votes count as ${activeWeight}x in this demo.`
+      : `Citizen votes count as ${activeWeight}x in this demo.`;
+
+    grid.innerHTML = VERIFICATION_ITEMS.map(item => {
+      const summary = summarizeVerification(item.id);
+      const verdict = getVerificationVerdict(summary);
+      const totalVotes = summary.completed.votes + summary.expired.votes + summary.fake.votes;
+
+      return `
+        <div class="verify-card">
+          <div class="verify-top">
+            <div>
+              <div class="verify-kicker">Community signal</div>
+              <div class="verify-title">${item.title}</div>
+            </div>
+            <div class="verdict-badge ${verdict.key}">${verdict.label}</div>
+          </div>
+          <div class="verify-meta">
+            <div class="verify-pill">📍 ${item.location}</div>
+            <div class="verify-pill">🏷️ ${item.source}</div>
+            <div class="verify-pill">⏳ ${item.deadline}</div>
+          </div>
+          <div class="verify-desc">${item.description}</div>
+          <div class="verify-counts">
+            <div class="verify-count">
+              <div class="verify-count-label">Completed</div>
+              <div class="verify-count-score">${summary.completed.weighted}</div>
+              <div class="verify-count-votes">${summary.completed.votes} votes</div>
+            </div>
+            <div class="verify-count">
+              <div class="verify-count-label">Expired</div>
+              <div class="verify-count-score">${summary.expired.weighted}</div>
+              <div class="verify-count-votes">${summary.expired.votes} votes</div>
+            </div>
+            <div class="verify-count">
+              <div class="verify-count-label">Fake</div>
+              <div class="verify-count-score">${summary.fake.weighted}</div>
+              <div class="verify-count-votes">${summary.fake.votes} votes</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--mid);margin-bottom:12px;">${totalVotes} total reports · current role: <strong style="color:var(--dark);text-transform:capitalize;">${verificationState.selectedRole}</strong></div>
+          <div class="verify-actions">
+            <button class="verify-btn completed" type="button" onclick="submitVerification('${item.id}', 'completed')">Completed</button>
+            <button class="verify-btn expired" type="button" onclick="submitVerification('${item.id}', 'expired')">Expired</button>
+            <button class="verify-btn fake" type="button" onclick="submitVerification('${item.id}', 'fake')">Fake</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  renderVerificationCards();
+</script>
+</body>
+</html>

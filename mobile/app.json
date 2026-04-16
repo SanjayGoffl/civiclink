@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Opportunity OS",
+    "slug": "opportunity-os",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#2563EB"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#2563EB"
+      },
+      "package": "com.opportunityos.app"
+    },
+    "ios": {
+      "bundleIdentifier": "com.opportunityos.app"
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

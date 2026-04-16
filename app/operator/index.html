@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Operator Dashboard — Opportunity OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#F8FAFC;--dark:#1E293B;--mid:#64748B;--light:#94A3B8;
+      --accent:#3B82F6;--accent-light:#EFF6FF;--border:#E2E8F0;
+      --card:#fff;--green:#10B981;--yellow:#F59E0B;--red:#EF4444;
+    }
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;}
+
+    /* TOP NAV */
+    .topnav{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:14px 28px;background:#fff;border-bottom:1px solid var(--border);
+      position:sticky;top:0;z-index:200;
+    }
+    .logo{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;}
+    .logo-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;}
+    .op-badge{background:#FEF3C7;color:#92400E;font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;}
+    .nav-right{display:flex;align-items:center;gap:14px;}
+    .op-chip{
+      display:flex;align-items:center;gap:8px;
+      background:var(--accent-light);border-radius:100px;padding:6px 14px;
+    }
+    .op-chip .av{width:26px;height:26px;border-radius:50%;background:var(--dark);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+    .op-chip .on{font-size:13px;font-weight:600;color:var(--dark);}
+    .nav-home{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;}
+    .nav-home:hover{color:var(--dark);}
+
+    /* LAYOUT */
+    .layout{display:flex;flex:1;}
+
+    /* SIDEBAR */
+    .sidebar{
+      width:220px;min-width:220px;
+      background:#fff;border-right:1px solid var(--border);
+      padding:20px 0;
+      position:sticky;top:57px;height:calc(100vh - 57px);
+      overflow-y:auto;
+    }
+    .sb-section{padding:0 16px 8px;}
+    .sb-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--light);padding:0 16px;margin-bottom:8px;margin-top:16px;}
+    .sb-item{
+      display:flex;align-items:center;gap:10px;
+      padding:9px 16px;border-radius:8px;margin:2px 8px;
+      cursor:pointer;font-size:13px;font-weight:500;color:var(--mid);
+      transition:all 0.15s;
+    }
+    .sb-item:hover{background:var(--bg);color:var(--dark);}
+    .sb-item.active{background:var(--accent-light);color:var(--accent);}
+    .sb-item .icon{font-size:15px;}
+    .sb-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:100px;}
+
+    /* MAIN */
+    .main{flex:1;padding:24px;overflow-y:auto;}
+    .page{display:none;}
+    .page.active{display:block;}
+
+    /* STATS ROW */
+    .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+    .stat-card{
+      background:#fff;border:1px solid var(--border);border-radius:12px;
+      padding:18px;
+    }
+    .stat-card .sc-num{font-size:28px;font-weight:700;color:var(--dark);}
+    .stat-card .sc-label{font-size:12px;color:var(--mid);margin-top:4px;}
+    .stat-card .sc-change{font-size:11px;font-weight:600;color:var(--green);margin-top:6px;}
+    .stat-card.blue .sc-num{color:var(--accent);}
+    .stat-card.green .sc-num{color:var(--green);}
+    .stat-card.yellow .sc-num{color:var(--yellow);}
+
+    /* SECTION HEADER */
+    .sec-header{
+      display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:16px;flex-wrap:wrap;gap:10px;
+    }
+    .sec-title{font-size:18px;font-weight:700;color:var(--dark);}
+    .sec-sub{font-size:13px;color:var(--mid);margin-top:2px;}
+
+    /* BUTTONS */
+    .btn{
+      display:flex;align-items:center;gap:6px;
+      padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;
+      cursor:pointer;border:none;font-family:inherit;transition:all 0.15s;
+    }
+    .btn-primary{background:var(--accent);color:#fff;}
+    .btn-primary:hover{opacity:0.9;}
+    .btn-outline{background:#fff;color:var(--dark);border:1px solid var(--border);}
+    .btn-outline:hover{background:var(--bg);}
+    .btn-sm{padding:6px 12px;font-size:12px;}
+    .btn-danger{background:#FEE2E2;color:var(--red);}
+
+    /* SEARCH BAR */
+    .search-box{
+      display:flex;gap:8px;margin-bottom:16px;
+    }
+    .search-input{
+      flex:1;display:flex;align-items:center;gap:8px;
+      background:#fff;border:1.5px solid var(--border);border-radius:10px;
+      padding:9px 14px;
+    }
+    .search-input input{border:none;outline:none;font-size:14px;font-family:inherit;color:var(--dark);width:100%;background:transparent;}
+    .search-input input::placeholder{color:var(--light);}
+
+    /* USER LOOKUP */
+    .lookup-card{
+      background:#fff;border:1px solid var(--border);border-radius:14px;
+      padding:24px;margin-bottom:20px;
+    }
+    .lookup-card h3{font-size:15px;font-weight:700;margin-bottom:16px;}
+    .lookup-form{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+    .lookup-form .form-group{display:flex;flex-direction:column;gap:6px;min-width:180px;flex:1;}
+    .lookup-form label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--light);}
+    .lookup-form input{
+      padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;
+      font-size:14px;font-family:inherit;color:var(--dark);outline:none;
+    }
+    .lookup-form input:focus{border-color:var(--accent);}
+
+    /* RESULT PROFILE */
+    .result-profile{
+      background:var(--accent-light);border:1px solid #BFDBFE;
+      border-radius:12px;padding:20px;margin-bottom:16px;display:none;
+    }
+    .result-profile.visible{display:block;}
+    .rp-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;}
+    .rp-name{font-size:18px;font-weight:700;color:var(--dark);}
+    .rp-meta{font-size:13px;color:var(--mid);margin-top:4px;line-height:1.6;}
+    .rp-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+    .rp-tag{font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;background:#fff;border:1px solid var(--border);color:var(--dark);}
+
+    /* SCHEMES TABLE */
+    .table-wrap{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+    table{width:100%;border-collapse:collapse;}
+    th{
+      font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;
+      color:var(--light);padding:12px 16px;text-align:left;
+      border-bottom:1px solid var(--border);background:var(--bg);
+    }
+    td{
+      font-size:13px;color:var(--dark);padding:12px 16px;
+      border-bottom:1px solid var(--border);vertical-align:middle;
+    }
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:var(--bg);}
+    .td-name{font-weight:600;max-width:220px;}
+    .td-benefit{color:var(--green);font-weight:500;}
+
+    /* BADGES */
+    .badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;}
+    .badge-eligible{background:#D1FAE5;color:#065F46;}
+    .badge-maybe{background:#FEF3C7;color:#92400E;}
+    .badge-no{background:#FEE2E2;color:var(--red);}
+    .badge-central{background:#E0F2FE;color:#0369A1;}
+    .badge-state{background:#F3E8FF;color:#7C3AED;}
+    .badge-active{background:#D1FAE5;color:#065F46;}
+    .badge-inactive{background:#F1F5F9;color:var(--mid);}
+
+    /* FORM CARD */
+    .form-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px;max-width:680px;}
+    .form-card h3{font-size:16px;font-weight:700;margin-bottom:6px;}
+    .form-card .sub{font-size:13px;color:var(--mid);margin-bottom:20px;}
+    .form-group{margin-bottom:14px;}
+    .form-group label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--light);display:block;margin-bottom:6px;}
+    .form-group input,.form-group select,.form-group textarea{
+      width:100%;padding:10px 12px;border:1.5px solid var(--border);
+      border-radius:8px;font-size:14px;font-family:inherit;color:var(--dark);outline:none;background:#fff;
+    }
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);}
+    .form-group textarea{resize:vertical;min-height:80px;}
+    .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .add-btn{
+      background:var(--accent);color:#fff;border:none;
+      padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;
+      cursor:pointer;font-family:inherit;margin-top:6px;
+    }
+    .add-btn:hover{opacity:0.9;}
+
+    /* HISTORY TABLE */
+    .history-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);}
+    .history-row:last-child{border-bottom:none;}
+    .hr-main .hr-name{font-size:13px;font-weight:600;color:var(--dark);}
+    .hr-main .hr-meta{font-size:12px;color:var(--mid);margin-top:2px;}
+    .hr-actions{display:flex;gap:8px;}
+
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.5);backdrop-filter:blur(4px);z-index:999;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:#fff;border-radius:18px;padding:32px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,0.15);position:relative;}
+    .modal-close{position:absolute;top:14px;right:18px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--mid);}
+    .receipt-paper{border:2px dashed var(--border);border-radius:10px;padding:20px;margin:16px 0;font-family:monospace;font-size:12px;}
+    .receipt-title{font-size:15px;font-weight:700;text-align:center;margin-bottom:4px;}
+    .receipt-sub{font-size:10px;text-align:center;color:var(--mid);margin-bottom:14px;}
+    .rs-block{margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed var(--border);}
+    .rs-block:last-child{border-bottom:none;margin-bottom:0;}
+    .rs-n{font-weight:700;font-size:12px;}
+    .rs-b{font-size:11px;color:var(--green);}
+    .rs-e{font-size:10px;color:var(--mid);}
+    .btn-full-print{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:10px;}
+  </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a class="nav-home" href="../landing/index.html">← Home</a>
+    <div class="logo"><div class="logo-dot"></div>Opportunity OS</div>
+    <div class="op-badge">🏛️ Operator</div>
+  </div>
+  <div class="nav-right">
+    <div class="op-chip">
+      <div class="av">OP</div>
+      <div class="on" id="opName">TN-OP-1234</div>
+    </div>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-label">Navigation</div>
+    <div class="sb-item active" onclick="showPage('dashboard',this)">
+      <span class="icon">📊</span> Dashboard
+    </div>
+    <div class="sb-item" onclick="showPage('lookup',this)">
+      <span class="icon">🔍</span> Lookup User
+      <span class="sb-badge">⭐</span>
+    </div>
+    <div class="sb-item" onclick="showPage('schemes',this)">
+      <span class="icon">📋</span> All Schemes
+    </div>
+    <div class="sb-item" onclick="showPage('add',this)">
+      <span class="icon">➕</span> Add Opportunity
+    </div>
+    <div class="sb-item" onclick="showPage('history',this)">
+      <span class="icon">🕒</span> History
+    </div>
+
+    <div class="sb-label">Info</div>
+    <div class="sb-item" style="cursor:default;color:var(--light);">
+      <span class="icon">📍</span> Tamil Nadu
+    </div>
+    <div class="sb-item" style="cursor:default;color:var(--light);">
+      <span class="icon">📅</span> April 2025
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+      <div class="sec-header">
+        <div>
+          <div class="sec-title">Operator Dashboard</div>
+          <div class="sec-sub">e-Sevai / Ration Shop / Field Operator — Quick overview</div>
+        </div>
+        <button class="btn btn-primary" onclick="showPage('lookup',document.querySelector('[onclick*=lookup]'))">🔍 Lookup User</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card blue">
+          <div class="sc-num">24</div>
+          <div class="sc-label">Users Served Today</div>
+          <div class="sc-change">↑ +6 from yesterday</div>
+        </div>
+        <div class="stat-card green">
+          <div class="sc-num">3,400</div>
+          <div class="sc-label">Total Schemes in DB</div>
+          <div class="sc-change">↑ Updated today</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-num">87</div>
+          <div class="sc-label">Receipts Printed</div>
+          <div class="sc-change">↑ +12 this week</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="sc-num">238</div>
+          <div class="sc-label">Tamil Nadu Schemes</div>
+          <div class="sc-change">State-specific matches</div>
+        </div>
+      </div>
+
+      <!-- RECENT USERS -->
+      <div class="sec-header"><div class="sec-title" style="font-size:15px;">Recent Users Served</div></div>
+      <div class="table-wrap" style="margin-bottom:24px;">
+        <table>
+          <thead><tr>
+            <th>Name</th><th>Aadhaar (last 4)</th><th>Age · Gender</th><th>State</th><th>Eligible Schemes</th><th>Action</th>
+          </tr></thead>
+          <tbody id="recentTbody">
+            <tr><td class="td-name">Arjun Ravi Kumar</td><td>••••0123</td><td>34 · Male</td><td>Tamil Nadu</td><td><span class="badge badge-eligible">18 eligible</span></td><td><button class="btn btn-outline btn-sm" onclick="lookupDemo('234567890123')">View</button></td></tr>
+            <tr><td class="td-name">Priya Sundaresan</td><td>••••1234</td><td>26 · Female</td><td>Tamil Nadu</td><td><span class="badge badge-eligible">12 eligible</span></td><td><button class="btn btn-outline btn-sm" onclick="lookupDemo('345678901234')">View</button></td></tr>
+            <tr><td class="td-name">Lakshmi Devi</td><td>••••6677</td><td>52 · Female</td><td>Karnataka</td><td><span class="badge badge-eligible">9 eligible</span></td><td><button class="btn btn-outline btn-sm" onclick="lookupDemo('223344556677')">View</button></td></tr>
+            <tr><td class="td-name">Senthil Murugan</td><td>••••4567</td><td>23 · Male</td><td>Tamil Nadu</td><td><span class="badge badge-maybe">6 partial</span></td><td><button class="btn btn-outline btn-sm" onclick="lookupDemo('678901234567')">View</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TOP SCHEMES -->
+      <div class="sec-header"><div class="sec-title" style="font-size:15px;">Most Matched Schemes</div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Scheme</th><th>Category</th><th>Level</th><th>Matched Users</th></tr></thead>
+          <tbody>
+            <tr><td class="td-name">PM Kisan Samman Nidhi</td><td>Agriculture</td><td><span class="badge badge-central">Central</span></td><td>📊 89 users</td></tr>
+            <tr><td class="td-name">MGNREGA Work Guarantee</td><td>Employment</td><td><span class="badge badge-central">Central</span></td><td>📊 76 users</td></tr>
+            <tr><td class="td-name">PM Ujjwala Yojana</td><td>Social Welfare</td><td><span class="badge badge-central">Central</span></td><td>📊 62 users</td></tr>
+            <tr><td class="td-name">Ayushman Bharat - PMJAY</td><td>Health</td><td><span class="badge badge-central">Central</span></td><td>📊 54 users</td></tr>
+            <tr><td class="td-name">Tamil Nadu CM Education Relief</td><td>Education</td><td><span class="badge badge-state">State</span></td><td>📊 34 users</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- LOOKUP PAGE -->
+    <div class="page" id="page-lookup">
+      <div class="sec-header">
+        <div>
+          <div class="sec-title">🔍 Lookup User by Aadhaar</div>
+          <div class="sec-sub">Enter Aadhaar number to instantly see all eligible schemes</div>
+        </div>
+      </div>
+
+      <div class="lookup-card">
+        <h3>Enter Aadhaar Number</h3>
+        <div class="lookup-form">
+          <div class="form-group">
+            <label>Aadhaar Number</label>
+            <input type="text" id="lookupAadhaar" placeholder="XXXX XXXX XXXX" maxlength="14" oninput="formatAadhaarOp(this)"/>
+          </div>
+          <button class="btn btn-primary" onclick="lookupUser()">Look Up →</button>
+          <button class="btn btn-outline" onclick="fillLookupDemo()">Try Demo</button>
+        </div>
+        <p style="font-size:12px;color:var(--light);margin-top:10px;">Demo numbers: 2345 6789 0123 · 3456 7890 1234 · 6789 0123 4567</p>
+      </div>
+
+      <!-- RESULT -->
+      <div class="result-profile" id="lookupResult">
+        <div class="rp-header">
+          <div>
+            <div class="rp-name" id="rp-name">—</div>
+            <div class="rp-meta" id="rp-meta">—</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary btn-sm" onclick="printLookupReceipt()">🖨️ Print Receipt</button>
+            <button class="btn btn-outline btn-sm" onclick="openUserView()">👤 Full View</button>
+          </div>
+        </div>
+        <div class="rp-tags" id="rp-tags"></div>
+      </div>
+
+      <!-- SCHEMES TABLE -->
+      <div id="lookupSchemesWrap" style="display:none;">
+        <div class="sec-header">
+          <div class="sec-title" style="font-size:15px;">Eligible Schemes</div>
+          <div style="font-size:13px;color:var(--mid);" id="lookupEligCount">—</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Scheme Name</th><th>Benefit</th><th>Category</th><th>Level</th><th>Eligibility</th><th>Action</th>
+            </tr></thead>
+            <tbody id="lookupSchemeTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALL SCHEMES PAGE -->
+    <div class="page" id="page-schemes">
+      <div class="sec-header">
+        <div>
+          <div class="sec-title">All Schemes</div>
+          <div class="sec-sub">3,400 schemes across Central and State governments</div>
+        </div>
+      </div>
+      <div class="search-box">
+        <div class="search-input">
+          <span>🔍</span>
+          <input type="text" id="schemesSearch" placeholder="Search by name, category, benefit..." oninput="renderSchemesTable()"/>
+        </div>
+        <select id="schemesLevelFilter" onchange="renderSchemesTable()" style="padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;color:var(--dark);outline:none;">
+          <option value="">All Levels</option>
+          <option value="Central">Central</option>
+          <option value="State">State</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Scheme Name</th><th>Category</th><th>Benefit</th><th>Level</th><th>Age</th><th>Action</th>
+          </tr></thead>
+          <tbody id="schemesAllTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ADD OPPORTUNITY PAGE -->
+    <div class="page" id="page-add">
+      <div class="sec-header">
+        <div>
+          <div class="sec-title">➕ Add New Opportunity</div>
+          <div class="sec-sub">Add local jobs, notices, or new schemes for your area</div>
+        </div>
+      </div>
+      <div class="form-card">
+        <h3>New Opportunity</h3>
+        <p class="sub">All fields required. Will be visible to users in your area once submitted.</p>
+        <div class="form-group">
+          <label>Opportunity Title</label>
+          <input type="text" id="addTitle" placeholder="e.g. Free Dental Camp at Panchayat Hall"/>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Type</label>
+            <select id="addType">
+              <option>Schemes</option>
+              <option>Job opportunities</option>
+              <option>Trainee programs</option>
+              <option>Subsidies</option>
+              <option>Local opportunities</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Level</label>
+            <select id="addLevel">
+              <option>Local</option>
+              <option>State</option>
+              <option>Central</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="addDesc" placeholder="Describe the opportunity, who it is for, and what they get..."></textarea>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Benefit / Offer</label>
+            <input type="text" id="addBenefit" placeholder="e.g. Free check-up + medicines"/>
+          </div>
+          <div class="form-group">
+            <label>Eligibility</label>
+            <input type="text" id="addElig" placeholder="e.g. Any adult aged 18+"/>
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Location / Pincode</label>
+            <input type="text" id="addPin" placeholder="e.g. 641001"/>
+          </div>
+          <div class="form-group">
+            <label>Expiry / Last Date</label>
+            <input type="date" id="addExpiry"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Source / Contact</label>
+          <input type="text" id="addSource" placeholder="e.g. District Collector Office, Coimbatore"/>
+        </div>
+        <button class="add-btn" onclick="addOpportunity()">Submit Opportunity →</button>
+      </div>
+    </div>
+
+    <!-- HISTORY PAGE -->
+    <div class="page" id="page-history">
+      <div class="sec-header">
+        <div class="sec-title">🕒 Lookup History</div>
+        <div class="sec-sub">Users you have served today</div>
+      </div>
+      <div class="table-wrap">
+        <div id="historyList">
+          <div class="history-row">
+            <div class="hr-main">
+              <div class="hr-name">Arjun Ravi Kumar — 2345 6789 0123</div>
+              <div class="hr-meta">34 · Male · Tamil Nadu · Farmer · 10:24 AM</div>
+            </div>
+            <div class="hr-actions">
+              <span class="badge badge-eligible">18 eligible</span>
+              <button class="btn btn-outline btn-sm" onclick="lookupDemo('234567890123');showPage('lookup',document.querySelector('[onclick*=lookup]'))">View</button>
+            </div>
+          </div>
+          <div class="history-row">
+            <div class="hr-main">
+              <div class="hr-name">Priya Sundaresan — 3456 7890 1234</div>
+              <div class="hr-meta">26 · Female · Tamil Nadu · Student · 10:41 AM</div>
+            </div>
+            <div class="hr-actions">
+              <span class="badge badge-eligible">12 eligible</span>
+              <button class="btn btn-outline btn-sm" onclick="lookupDemo('345678901234');showPage('lookup',document.querySelector('[onclick*=lookup]'))">View</button>
+            </div>
+          </div>
+          <div class="history-row">
+            <div class="hr-main">
+              <div class="hr-name">Senthil Murugan — 6789 0123 4567</div>
+              <div class="hr-meta">23 · Male · Tamil Nadu · Daily Wages · 11:05 AM</div>
+            </div>
+            <div class="hr-actions">
+              <span class="badge badge-maybe">6 partial</span>
+              <button class="btn btn-outline btn-sm" onclick="lookupDemo('678901234567');showPage('lookup',document.querySelector('[onclick*=lookup]'))">View</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- RECEIPT MODAL -->
+<div class="modal-overlay" id="receiptModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeReceipt()">✕</button>
+    <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">🖨️ Eligibility Receipt</h2>
+    <p style="font-size:13px;color:var(--mid);margin-bottom:0;">For CSC / e-Sevai submission</p>
+    <div class="receipt-paper" id="receiptContent"></div>
+    <button class="btn-full-print" onclick="window.print()">Print Now</button>
+    <button class="btn-full-print" onclick="closeReceipt()" style="background:var(--bg);color:var(--dark);border:1px solid var(--border);margin-top:6px;">Close</button>
+  </div>
+</div>
+
+<script>
+// Scheme data (same as user page)
+const SCHEMES = [
+  {id:1,name:"PM Kisan Samman Nidhi",cat:"Agriculture,Rural & Environment",level:"Central",benefit:"₹6,000/year",eligibility:"Farmers with <2 hectares land",tags:["Farmer"],type:"Schemes",minAge:18,maxAge:65,gender:"any",state:"",income:200000},
+  {id:2,name:"PM Ujjwala Yojana",cat:"Social welfare & Empowerment",level:"Central",benefit:"Free LPG connection",eligibility:"BPL / SC / ST women",tags:["Women"],type:"Schemes",minAge:18,maxAge:60,gender:"female",state:"",income:100000},
+  {id:3,name:"Indira Mahila Shakti Udyam Protsahan",cat:"Business & Entrepreneurship",level:"State",benefit:"Loan up to ₹50 lakh",eligibility:"Women 18+ Rajasthan",tags:["Women","Loan"],type:"Subsidies",minAge:18,maxAge:60,gender:"female",state:"Rajasthan",income:0},
+  {id:4,name:"Pre-Matric Scholarship (OBC)",cat:"Education & Learning",level:"State",benefit:"₹20-₹40/month",eligibility:"Class 6-10 OBC students",tags:["Student"],type:"Schemes",minAge:10,maxAge:18,gender:"any",state:"Madhya Pradesh",income:150000},
+  {id:5,name:"Shramik Aujaar Sahayata Yojana",cat:"Social welfare & Empowerment",level:"State",benefit:"Free toolkit",eligibility:"Registered construction workers CG",tags:["Labour"],type:"Schemes",minAge:18,maxAge:60,gender:"any",state:"Chhattisgarh",income:0},
+  {id:6,name:"PM Awas Yojana (Urban)",cat:"Housing & Shelter",level:"Central",benefit:"₹2.5 lakh subsidy",eligibility:"EWS/LIG families",tags:["Housing"],type:"Subsidies",minAge:21,maxAge:70,gender:"any",state:"",income:600000},
+  {id:7,name:"Beti Bachao Beti Padhao",cat:"Women and Child",level:"Central",benefit:"Education support",eligibility:"Girl children",tags:["Girl"],type:"Schemes",minAge:0,maxAge:18,gender:"female",state:"",income:0},
+  {id:8,name:"NSP Post Matric Scholarship",cat:"Education & Learning",level:"Central",benefit:"Tuition + maintenance",eligibility:"SC/ST/OBC post-matric",tags:["Student"],type:"Schemes",minAge:16,maxAge:35,gender:"any",state:"",income:200000},
+  {id:9,name:"PM Mudra Yojana",cat:"Business & Entrepreneurship",level:"Central",benefit:"Loan ₹50k - ₹10L",eligibility:"Small business owners",tags:["Business","Loan"],type:"Subsidies",minAge:18,maxAge:65,gender:"any",state:"",income:0},
+  {id:10,name:"MGNREGA Work Guarantee",cat:"Skills & Employment",level:"Central",benefit:"100 days guaranteed work",eligibility:"Any adult rural household",tags:["Employment"],type:"Job opportunities",minAge:18,maxAge:999,gender:"any",state:"",income:0},
+  {id:11,name:"Atal Pension Yojana",cat:"Banking,Financial Services and Insurance",level:"Central",benefit:"₹1-5k/month pension",eligibility:"18-40 unorganized sector",tags:["Pension"],type:"Schemes",minAge:18,maxAge:40,gender:"any",state:"",income:0},
+  {id:12,name:"PM Suraksha Bima Yojana",cat:"Banking,Financial Services and Insurance",level:"Central",benefit:"₹2L accident insurance @₹12/yr",eligibility:"18-70 bank account holders",tags:["Insurance"],type:"Schemes",minAge:18,maxAge:70,gender:"any",state:"",income:0},
+  {id:13,name:"Ayushman Bharat - PMJAY",cat:"Health & Wellness",level:"Central",benefit:"₹5L health cover/year",eligibility:"Lower income families",tags:["Health"],type:"Schemes",minAge:0,maxAge:999,gender:"any",state:"",income:500000},
+  {id:14,name:"TN CM Relief - Education",cat:"Education & Learning",level:"State",benefit:"Education financial aid",eligibility:"Low-income Tamil Nadu students",tags:["Student"],type:"Schemes",minAge:5,maxAge:30,gender:"any",state:"Tamil Nadu",income:200000},
+  {id:15,name:"Kisan Credit Card",cat:"Agriculture,Rural & Environment",level:"Central",benefit:"Credit ₹3L @ 7%",eligibility:"Farmers, fishermen",tags:["Farmer","Credit"],type:"Subsidies",minAge:18,maxAge:75,gender:"any",state:"",income:0},
+  {id:16,name:"Skill India / PMKVY",cat:"Skills & Employment",level:"Central",benefit:"Free training + ₹8k stipend",eligibility:"Youth 15-45 min 8th std",tags:["Youth","Skill"],type:"Trainee programs",minAge:15,maxAge:45,gender:"any",state:"",income:0},
+  {id:17,name:"PM Jeevan Jyoti Bima",cat:"Banking,Financial Services and Insurance",level:"Central",benefit:"₹2L life insurance @₹330/yr",eligibility:"18-50 bank account holders",tags:["Insurance","Life"],type:"Schemes",minAge:18,maxAge:50,gender:"any",state:"",income:0},
+  {id:18,name:"Startup India Seed Fund",cat:"Business & Entrepreneurship",level:"Central",benefit:"Up to ₹50L seed funding",eligibility:"DPIIT startups <2 years",tags:["Startup"],type:"Subsidies",minAge:18,maxAge:45,gender:"any",state:"",income:0},
+  {id:19,name:"Stand Up India",cat:"Business & Entrepreneurship",level:"Central",benefit:"Loan ₹10L-₹1 crore",eligibility:"SC/ST or women entrepreneurs",tags:["SC/ST","Women"],type:"Subsidies",minAge:18,maxAge:65,gender:"any",state:"",income:0},
+  {id:20,name:"MGNREGA Women Drive",cat:"Skills & Employment",level:"Central",benefit:"100 days wages (30% reserved)",eligibility:"Rural women adults",tags:["Women","Employment"],type:"Job opportunities",minAge:18,maxAge:65,gender:"female",state:"",income:0},
+  {id:21,name:"Digital Literacy PMGDISHA",cat:"Skills & Employment",level:"Central",benefit:"Free 20hr digital training",eligibility:"Rural households, 14-60",tags:["Digital","Rural"],type:"Trainee programs",minAge:14,maxAge:60,gender:"any",state:"",income:0},
+  {id:22,name:"Free Eye Camp (Local - TN)",cat:"Health & Wellness",level:"Local",benefit:"Free vision test + glasses",eligibility:"All residents, priority elderly",tags:["Health","Eye"],type:"Local opportunities",minAge:5,maxAge:999,gender:"any",state:"Tamil Nadu",income:0},
+  {id:23,name:"Nirman Shramik Suraksha (RJ)",cat:"Health & Wellness",level:"State",benefit:"Insurance + pension reimbursement",eligibility:"Registered BOC workers Rajasthan",tags:["Labour"],type:"Schemes",minAge:18,maxAge:60,gender:"any",state:"Rajasthan",income:0},
+  {id:24,name:"NSP Pre-Matric SC/ST",cat:"Education & Learning",level:"Central",benefit:"Tuition + maintenance allowance",eligibility:"SC/ST students pre-matric",tags:["SC/ST","Student"],type:"Schemes",minAge:6,maxAge:18,gender:"any",state:"",income:250000},
+];
+
+const AADHAAR_DB = {
+  "234567890123": { name: "Arjun Ravi Kumar", dob: "1990-05-12", age: 34, gender: "Male", address: "12 Gandhi Nagar, Coimbatore", pincode: "641001", state: "Tamil Nadu", occupation: "Farmer", income: 150000, caste: "OBC" },
+  "345678901234": { name: "Priya Sundaresan",  dob: "1998-03-22", age: 26, gender: "Female", address: "45 Anna Salai, Chennai", pincode: "600002", state: "Tamil Nadu", occupation: "Student", income: 80000, caste: "General" },
+  "456789012345": { name: "Ramu Krishnaswamy", dob: "1975-11-08", age: 49, gender: "Male", address: "7 Nehru Street, Madurai", pincode: "625001", state: "Tamil Nadu", occupation: "Daily Wages", income: 60000, caste: "SC" },
+  "567890123456": { name: "Kavitha Subramaniam", dob: "1985-07-30", age: 38, gender: "Female", address: "89 MG Road, Salem", pincode: "636001", state: "Tamil Nadu", occupation: "Self-employed", income: 200000, caste: "OBC" },
+  "678901234567": { name: "Senthil Murugan", dob: "2001-01-15", age: 23, gender: "Male", address: "3 Periyar Nagar, Trichy", pincode: "620001", state: "Tamil Nadu", occupation: "Daily Wages", income: 72000, caste: "MBC" },
+  "789012345678": { name: "Anitha Ramachandran", dob: "1969-09-20", age: 55, gender: "Female", address: "22 Bharat Nagar, Tirunelveli", pincode: "627001", state: "Tamil Nadu", occupation: "Homemaker", income: 45000, caste: "General" },
+  "890123456789": { name: "Mani Velayutham", dob: "1993-12-05", age: 31, gender: "Male", address: "56 Subash Road, Erode", pincode: "638001", state: "Tamil Nadu", occupation: "Construction Worker", income: 90000, caste: "SC" },
+  "901234567890": { name: "Deepa Natarajan", dob: "2002-06-18", age: 22, gender: "Female", address: "17 Patel Nagar, Vellore", pincode: "632001", state: "Tamil Nadu", occupation: "Student", income: 100000, caste: "OBC" },
+  "223344556677": { name: "Lakshmi Devi", dob: "1972-08-14", age: 52, gender: "Female", address: "10 Station Road, Bengaluru", pincode: "560001", state: "Karnataka", occupation: "Farmer", income: 120000, caste: "General" },
+  "112233445566": { name: "Balaji Srinivasan", dob: "1980-04-25", age: 44, gender: "Male", address: "33 Rajiv Gandhi Street, Kochi", pincode: "682001", state: "Kerala", occupation: "Business", income: 350000, caste: "General" },
+};
+
+let currentLookupProfile = null;
+
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if (el) el.classList.add('active');
+  if (id === 'schemes') renderSchemesTable();
+}
+
+function formatAadhaarOp(inp) {
+  let v = inp.value.replace(/\D/g,'').slice(0,12);
+  inp.value = v.replace(/(\d{4})(?=\d)/g,'$1 ');
+}
+
+function fillLookupDemo() {
+  document.getElementById('lookupAadhaar').value = '2345 6789 0123';
+}
+
+function lookupUser() {
+  const raw = document.getElementById('lookupAadhaar').value.replace(/\s/g,'');
+  if (raw.length !== 12) { alert('Please enter a valid 12-digit Aadhaar number'); return; }
+  const p = AADHAAR_DB[raw];
+  if (!p) {
+    // fallback
+    currentLookupProfile = { name:"New User", age:30, gender:"Male", state:"Tamil Nadu", pincode:"600001", address:"Unknown", occupation:"Not specified", income:100000, caste:"General" };
+    alert('Aadhaar not in demo DB. Showing generic profile.');
+  } else {
+    currentLookupProfile = p;
+  }
+  renderLookupResult(currentLookupProfile);
+}
+
+function lookupDemo(aadhaar) {
+  currentLookupProfile = AADHAAR_DB[aadhaar];
+  if (currentLookupProfile) {
+    document.getElementById('lookupAadhaar').value = aadhaar.replace(/(\d{4})(?=\d)/g,'$1 ');
+    renderLookupResult(currentLookupProfile);
+  }
+}
+
+function checkElig(s, p) {
+  let score=0; let total=0;
+  if (s.minAge && s.maxAge) { total++; if(p.age>=s.minAge && p.age<=s.maxAge) score++; }
+  if (s.gender && s.gender!=='any') { total++; if((p.gender||'').toLowerCase()===s.gender) score++; }
+  if (s.state && s.state!=='') { total++; if(p.state===s.state || s.level==='Central') score++; }
+  if (s.income>0) { total++; if((p.income||999999)<=s.income) score++; }
+  if (total===0) return 'maybe';
+  const r=score/total;
+  return r>=0.9?'yes': r>=0.5?'maybe':'no';
+}
+
+function renderLookupResult(p) {
+  document.getElementById('rp-name').textContent = p.name;
+  document.getElementById('rp-meta').textContent =
+    `${p.age} yrs · ${p.gender} · ${p.state} · Pincode: ${p.pincode}\nOccupation: ${p.occupation} · Income: ₹${(p.income||0).toLocaleString('en-IN')}/yr · Caste: ${p.caste||'—'}`;
+  document.getElementById('rp-meta').style.whiteSpace = 'pre-line';
+  document.getElementById('rp-tags').innerHTML = [
+    `📍 ${p.address}`,
+    `👤 ${p.gender}`,
+    `📅 ${p.age} yrs`,
+    `🏠 ${p.state}`,
+    `💼 ${p.occupation}`,
+    p.caste ? `🔰 ${p.caste}` : null,
+  ].filter(Boolean).map(t=>`<div class="rp-tag">${t}</div>`).join('');
+  document.getElementById('lookupResult').classList.add('visible');
+
+  // Schemes table
+  const eligible = SCHEMES.filter(s => checkElig(s,p)==='yes');
+  const maybe = SCHEMES.filter(s => checkElig(s,p)==='maybe');
+  const all = [...eligible, ...maybe];
+
+  document.getElementById('lookupEligCount').textContent = `${eligible.length} fully eligible · ${maybe.length} partially eligible`;
+  document.getElementById('lookupSchemesWrap').style.display = 'block';
+  document.getElementById('lookupSchemeTbody').innerHTML = all.map(s => {
+    const e = checkElig(s,p);
+    const bc = e==='yes'?'badge-eligible':e==='maybe'?'badge-maybe':'';
+    return `<tr>
+      <td class="td-name">${s.name}</td>
+      <td class="td-benefit">${s.benefit}</td>
+      <td>${s.cat.split(',')[0]}</td>
+      <td><span class="badge ${s.level==='Central'?'badge-central':'badge-state'}">${s.level}</span></td>
+      <td><span class="badge ${bc}">${e==='yes'?'✓ Eligible':'~ Partial'}</span></td>
+      <td><button class="btn btn-outline btn-sm" onclick="printSingle(${s.id})">🖨️</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderSchemesTable() {
+  const q = (document.getElementById('schemesSearch').value||'').toLowerCase();
+  const lvl = document.getElementById('schemesLevelFilter').value;
+  const filtered = SCHEMES.filter(s =>
+    (!q || s.name.toLowerCase().includes(q) || s.cat.toLowerCase().includes(q)) &&
+    (!lvl || s.level === lvl)
+  );
+  document.getElementById('schemesAllTbody').innerHTML = filtered.map(s=>`
+    <tr>
+      <td class="td-name">${s.name}</td>
+      <td>${s.cat.split(',')[0]}</td>
+      <td class="td-benefit">${s.benefit}</td>
+      <td><span class="badge ${s.level==='Central'?'badge-central':'badge-state'}">${s.level}</span></td>
+      <td>${s.minAge}–${s.maxAge>=999?'Any':s.maxAge}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="printSingle(${s.id})">🖨️</button></td>
+    </tr>`).join('');
+}
+
+function addOpportunity() {
+  const title = document.getElementById('addTitle').value;
+  if (!title) { alert('Please enter a title'); return; }
+  alert(`✅ Opportunity "${title}" submitted successfully!\n\nIt will appear for matching users in your area.`);
+  ['addTitle','addDesc','addBenefit','addElig','addPin','addSource'].forEach(id=>{document.getElementById(id).value='';});
+}
+
+function printLookupReceipt() {
+  if (!currentLookupProfile) return;
+  const p = currentLookupProfile;
+  const eligible = SCHEMES.filter(s=>checkElig(s,p)==='yes');
+  const date = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('receiptContent').innerHTML = `
+    <div class="receipt-title">OPPORTUNITY OS — ELIGIBILITY RECEIPT</div>
+    <div class="receipt-sub">Date: ${date} · Operator: ${document.getElementById('opName').textContent}<br/>
+    Name: ${p.name} · State: ${p.state} · Age: ${p.age} · Gender: ${p.gender}</div>
+    ${eligible.map(s=>`<div class="rs-block"><div class="rs-n">${s.name}</div><div class="rs-b">Benefit: ${s.benefit}</div><div class="rs-e">For: ${s.eligibility}</div><div class="rs-e">Level: ${s.level}</div></div>`).join('')}
+    <div style="font-size:10px;color:var(--mid);text-align:center;margin-top:10px;">Take to nearest CSC / e-Sevai · Opportunity OS Demo</div>
+  `;
+  document.getElementById('receiptModal').classList.add('open');
+}
+
+function printSingle(id) {
+  const s = SCHEMES.find(x=>x.id===id);
+  const date = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('receiptContent').innerHTML = `
+    <div class="receipt-title">SCHEME RECEIPT</div>
+    <div class="receipt-sub">Date: ${date} · Opportunity OS</div>
+    <div class="rs-block"><div class="rs-n">${s.name}</div><div class="rs-b">Benefit: ${s.benefit}</div><div class="rs-e">Eligibility: ${s.eligibility}</div><div class="rs-e">Level: ${s.level} · Category: ${s.cat}</div></div>
+    <div style="font-size:10px;color:var(--mid);text-align:center;margin-top:10px;">Take to nearest CSC / e-Sevai</div>
+  `;
+  document.getElementById('receiptModal').classList.add('open');
+}
+
+function openUserView() {
+  if (currentLookupProfile) {
+    sessionStorage.setItem('opp_profile', JSON.stringify(currentLookupProfile));
+    window.open('../user/index.html', '_blank');
+  }
+}
+
+function closeReceipt() { document.getElementById('receiptModal').classList.remove('open'); }
+document.getElementById('receiptModal').addEventListener('click', e=>{ if(e.target.id==='receiptModal') closeReceipt(); });
+
+// Init
+renderSchemesTable();
+</script>
+</body>
+</html>
